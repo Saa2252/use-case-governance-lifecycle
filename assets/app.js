@@ -842,6 +842,51 @@ function recordMarkdown() {
   return L.join('\n');
 }
 
+/* ------------------------------------------------------ methodology ----- */
+/* Plain-language explainer, aimed at a reader with no governance or legal
+   background. A handful of live figures are pulled in rather than typed as
+   fixed numbers, so this can't quietly drift out of sync with the actual
+   question count, weight split or escalation rules if those ever change. */
+
+function renderMethodology() {
+  const heavy = RISK_QUESTIONS.filter(q => q.weight === 2).length;
+  const light = RISK_QUESTIONS.filter(q => q.weight === 1).length;
+
+  $('#methbody').innerHTML = `
+    <h3 style="margin-top:0">The question underneath everything</h3>
+    <p>A board does not want a philosophy of AI safety. It wants one specific thing: proof that before an AI agent went live, someone who could be held responsible looked hard enough, wrote it down, and can show the paper trail if something goes wrong later. This tool is built around six checkpoints that produce exactly that paper trail.</p>
+
+    <h4>The six checkpoints, in order</h4>
+    <ol style="padding-left:20px">
+      <li><b>What is it?</b> — describe it in plain terms: what it does, who it talks to, what it is allowed to touch.</li>
+      <li><b>How much could go wrong?</b> — eight questions turn that description into a risk level.</li>
+      <li><b>What has to be true before launch?</b> — the risk level decides which safeguards are required.</li>
+      <li><b>Show me proof</b> — each safeguard needs a real, dated piece of evidence, not just a claim.</li>
+      <li><b>Who signs?</b> — one named person takes responsibility, with two more confirming they reviewed it.</li>
+      <li><b>Is it still safe?</b> — after launch, what is being watched, and what would trigger a re-check.</li>
+    </ol>
+    <p>They run in this order on purpose. You cannot decide how careful to be (2) before you know what the thing is (1). You cannot demand safeguards (3) before you know how risky it is (2). And so on down the list.</p>
+
+    <h4>Before any of that: is this even allowed?</h4>
+    <p>Some AI uses are not just risky — they are not permitted at all under EU law, no matter how many safeguards get added. Manipulating people below their conscious awareness. Scoring someone's "trustworthiness" from unrelated behaviour. Identifying named people in real time from public camera feeds. ${PROHIBITED_CHECKS.length} fast yes/no questions check for this, right at the start of gate 1, before any time is spent on the rest. A "yes" to any of them does not mean "be more careful" — it means stop, and get a lawyer's answer in writing before designing anything further.</p>
+
+    <h4>How "how risky is this" actually gets decided</h4>
+    <p>${RISK_QUESTIONS.length} questions, each answered on the same four-point scale: Low, Moderate, High, Severe. Things like: how much money can it move without a person checking first? How much does it decide entirely on its own? If it gets something wrong, how hard is that to undo?</p>
+    <p>Not every question matters equally, so not every question counts equally. ${heavy} of them — how much money is involved, how independently it acts, how hard a mistake is to undo, and the widest thing it is allowed to touch — set the ceiling on how bad a single failure can be, so each counts twice. The other ${light} — how many people one failure could touch, how sensitive the data is, whether EU rules apply, and whether it reads text written by people it does not control — usually make an existing problem worse rather than create a new ceiling on their own, so each counts once.</p>
+    <p>All ${RISK_QUESTIONS.length} answers, weighted this way, get averaged into a single number from 0 to 3. If that average lands at ${TIER1_AVG_SEVERITY.toFixed(1)} or higher — roughly "High" — it is automatically the strictest category. If it stays under ${TIER3_AVG_SEVERITY.toFixed(1)} — roughly "Moderate" — it is the lightest. Anything in between is the middle category.</p>
+
+    <h4>The twist: some combinations are worse than their parts</h4>
+    <p>Averaging treats every dangerous thing as if it adds up politely. It does not. A system that lets anyone type anything at it <i>and</i> can move money is not "moderately risky twice" — it is a different, worse problem, because the two facts combine into something neither one is alone. So on top of the average, a short list of ${ESCALATIONS.length} specific dangerous combinations can force the strictest category regardless of what the math says — each one written as a plain sentence, not hidden in a formula, so a non-technical reviewer can read it and agree or push back.</p>
+
+    <h4>What happens with the answer</h4>
+    <p>The risk category decides which safeguards are actually required — not a fixed checklist everyone gets regardless of how risky they are, but a list generated from the specific answers given. Each required safeguard needs a real piece of evidence before anyone signs: a test result, a config screenshot, a log sample, with a date and a named owner. Then one person — not a committee — signs their name to it, alongside confirmation from risk and legal that they reviewed it. After launch, specific numbers get watched on a schedule, with a stated consequence if they cross a line, plus a rule for what happens if the system's version or its permissions change later.</p>
+
+    <h4>Why the example fails, then passes</h4>
+    <p>The worked example in this tool is deliberately not a success story on the first try. It fails the safeguards checkpoint on two specific points, gets sent back with named conditions, an owner and a due date for each, and only reaches sign-off after those conditions are actually met and proven. That is the part worth paying attention to: a process that can only ever say yes is not really a process. It is paperwork with extra steps.</p>
+  `;
+  $('#methModal').hidden = false;
+}
+
 /* -------------------------------------------------------------- boot ---- */
 
 function openApp() {
@@ -894,7 +939,14 @@ $('#copyrec').onclick = async () => {
   catch (e) { $('#copyrec').textContent = 'Copy failed'; }
   setTimeout(() => { $('#copyrec').textContent = 'Copy as Markdown'; }, 1600);
 };
-document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#modal').hidden = true; });
+$('#methbtn').onclick = renderMethodology;
+$('#closemeth').onclick = () => { $('#methModal').hidden = true; };
+$('#methModal').onclick = e => { if (e.target.id === 'methModal') $('#methModal').hidden = true; };
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  $('#modal').hidden = true;
+  $('#methModal').hidden = true;
+});
 
 start();
 applyDeepLink();
