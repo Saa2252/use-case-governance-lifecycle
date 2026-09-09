@@ -446,14 +446,14 @@ function g6() {
   const rc = state.recheck;
   const recheckPanel = rc
     ? `<div class="banner ${rc.done ? 'go' : 'stop'}">
-        <h3>${rc.done ? 'Light re-check complete' : 'Model version changed — light re-check required'}</h3>
+        <h3>${rc.done ? 'Light re-check complete' : 'Something changed underneath the approval — light re-check required'}</h3>
         <p>${rc.done
           ? 'Gate 2 was re-run in light mode and the tier held. The approval remains valid and the review date was reset.'
-          : 'The supplier moved the model version underneath a system that was approved against a specific one. This does not re-open the whole lifecycle — it re-opens gate 2 in light mode. Four questions, one reviewer, same day.'}</p>
+          : 'The model version moved, or Ava\'s tool permissions changed — either one trips the same wire. This does not re-open the whole lifecycle — it re-opens gate 2 in light mode. Four questions, one reviewer, same day.'}</p>
         ${!rc.done ? `<ul style="margin:0 0 12px;padding-left:18px;font-size:13.5px;color:var(--ink2)">
           <li>Do the tool permissions still match what was approved?</li>
           <li>Did any answer at gate 2 change?</li>
-          <li>Re-run the prompt injection suite against the new version — same result?</li>
+          <li>Re-run the prompt injection suite against the change — same result?</li>
           <li>Re-run the threshold test — does it still stop at the configured number?</li>
         </ul><button class="primary" data-act="rechecked">Re-check done, tier holds</button>` : ''}
       </div>`
@@ -471,9 +471,9 @@ function g6() {
     <textarea data-mon="incident" placeholder="Who is paged, what they may do without escalating, when the regulator clock starts.">${esc(m.incident || '')}</textarea></div>
 
   <div class="card"><h3>Model change control</h3>
-    <p class="hint">The most common way an approved AI system becomes an unapproved one is that nobody told governance the version moved.</p>
+    <p class="hint">The most common way an approved AI system becomes an unapproved one is that nobody told governance something moved — the model version, or what it's allowed to do.</p>
     <textarea data-mon="modelChange" placeholder="What triggers a re-check, and how deep it goes.">${esc(m.modelChange || '')}</textarea>
-    ${!rc ? `<div style="margin-top:12px"><button class="ghost" data-act="modelchange">Simulate: the supplier changed the model version</button></div>` : ''}</div>
+    ${!rc ? `<div style="margin-top:12px"><button class="ghost" data-act="modelchange">Simulate: model version or tool permissions changed</button></div>` : ''}</div>
 
   <div class="card"><h3>Review and retirement</h3>
     <div class="f"><label class="lab">Next scheduled review</label>
@@ -623,12 +623,12 @@ const actions = {
   seedmon()    { seedMonitoring(state); render(); },
   modelchange() {
     state.recheck = { done: false };
-    log('fail', `<b>Supplier changed the model version.</b> The approved version enters deprecation. Gate 2 re-opens in light mode before the new version reaches members.`);
+    log('fail', `<b>Something changed underneath the approval.</b> Either the supplier moved the model version, or Ava's tool permissions changed — the policy treats both as the same trigger. Gate 2 re-opens in light mode before the change reaches members.`);
     render();
   },
   rechecked() {
     state.recheck = { done: true };
-    log('pass', `<b>Light re-check complete.</b> Tier held at Tier 1. Injection suite and threshold test re-run against the new version, same results. Approval remains valid; review date reset.`);
+    log('pass', `<b>Light re-check complete.</b> Tier held at Tier 1. Injection suite and threshold test re-run against the change, same results. Approval remains valid; review date reset.`);
     render();
   }
 };

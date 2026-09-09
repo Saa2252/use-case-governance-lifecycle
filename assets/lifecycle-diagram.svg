@@ -1,85 +1,85 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
   <defs>
     <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#8b9198"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#8f96a3"/>
     </marker>
     <marker id="arwt" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#0f5c5c"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f3a5f"/>
     </marker>
     <marker id="arwr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M0,0 L10,5 L0,10 z" fill="#a32020"/>
+      <path d="M0,0 L10,5 L0,10 z" fill="#a3242a"/>
     </marker>
   </defs>
 
-  <rect width="1600" height="900" fill="#f6f6f4"/>
+  <rect width="1600" height="900" fill="#f3f4f7"/>
 
   <!-- ── header ─────────────────────────────────────────────────────── -->
-  <text x="80" y="72" font-size="16" letter-spacing="2.4" fill="#0f5c5c" font-weight="700">USE CASE GOVERNANCE LIFECYCLE</text>
-  <text x="80" y="126" font-size="40" font-weight="600" fill="#16191d">Six gates between an idea and an AI agent</text>
-  <text x="80" y="172" font-size="40" font-weight="600" fill="#16191d">your board can defend</text>
-  <line x1="80" y1="206" x2="1520" y2="206" stroke="#cfd0ca" stroke-width="1"/>
+  <text x="80" y="72" font-size="16" letter-spacing="2.4" fill="#1f3a5f" font-weight="700">USE CASE GOVERNANCE LIFECYCLE</text>
+  <text x="80" y="126" font-size="40" font-weight="600" fill="#12151c">Six gates between an idea and an AI agent</text>
+  <text x="80" y="172" font-size="40" font-weight="600" fill="#12151c">your board can defend</text>
+  <line x1="80" y1="206" x2="1520" y2="206" stroke="#c7cad4" stroke-width="1"/>
 
   <!-- ── row 1: gates 1–5 ───────────────────────────────────────────── -->
 
   <!-- gate 1 -->
-  <rect x="80" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e0e0dc"/>
-  <circle cx="112" cy="274" r="15" fill="#0f5c5c"/>
+  <rect x="80" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e2e4ea"/>
+  <circle cx="112" cy="274" r="15" fill="#1f3a5f"/>
   <text x="112" y="279" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">1</text>
-  <text x="140" y="279" font-size="12" fill="#7c848d" letter-spacing="1.3">INTAKE</text>
-  <text x="104" y="322" font-size="19" font-weight="600" fill="#16191d">What is it?</text>
-  <text x="104" y="354" font-size="13.5" fill="#4d545c">Purpose, users, data, the</text>
-  <text x="104" y="374" font-size="13.5" fill="#4d545c">tools it can call, model,</text>
-  <text x="104" y="394" font-size="13.5" fill="#4d545c">supplier.</text>
-  <text x="104" y="432" font-size="12" fill="#7c848d">45 min · owner + engineer</text>
+  <text x="140" y="279" font-size="12" fill="#767d8e" letter-spacing="1.3">INTAKE</text>
+  <text x="104" y="322" font-size="19" font-weight="600" fill="#12151c">What is it?</text>
+  <text x="104" y="354" font-size="13.5" fill="#4a5163">Purpose, users, data, the</text>
+  <text x="104" y="374" font-size="13.5" fill="#4a5163">tools it can call, model,</text>
+  <text x="104" y="394" font-size="13.5" fill="#4a5163">supplier.</text>
+  <text x="104" y="432" font-size="12" fill="#767d8e">45 min · owner + engineer</text>
 
   <!-- gate 2 -->
-  <rect x="376" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e0e0dc"/>
-  <circle cx="408" cy="274" r="15" fill="#0f5c5c"/>
+  <rect x="376" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e2e4ea"/>
+  <circle cx="408" cy="274" r="15" fill="#1f3a5f"/>
   <text x="408" y="279" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">2</text>
-  <text x="436" y="279" font-size="12" fill="#7c848d" letter-spacing="1.3">RISK TIER</text>
-  <text x="400" y="322" font-size="19" font-weight="600" fill="#16191d">How much could go</text>
-  <text x="400" y="345" font-size="19" font-weight="600" fill="#16191d">wrong?</text>
-  <text x="400" y="377" font-size="13.5" fill="#4d545c">Money, autonomy,</text>
-  <text x="400" y="397" font-size="13.5" fill="#4d545c">reversibility, blast radius,</text>
-  <text x="400" y="417" font-size="13.5" fill="#4d545c">PII, EU, untrusted input.</text>
-  <text x="400" y="446" font-size="12" fill="#7c848d">60 min · + risk, security</text>
+  <text x="436" y="279" font-size="12" fill="#767d8e" letter-spacing="1.3">RISK TIER</text>
+  <text x="400" y="322" font-size="19" font-weight="600" fill="#12151c">How much could go</text>
+  <text x="400" y="345" font-size="19" font-weight="600" fill="#12151c">wrong?</text>
+  <text x="400" y="377" font-size="13.5" fill="#4a5163">Money, autonomy,</text>
+  <text x="400" y="397" font-size="13.5" fill="#4a5163">reversibility, blast radius,</text>
+  <text x="400" y="417" font-size="13.5" fill="#4a5163">PII, EU, untrusted input.</text>
+  <text x="400" y="446" font-size="12" fill="#767d8e">60 min · + risk, security</text>
 
   <!-- gate 3 (the one that fails) -->
-  <rect x="672" y="240" width="256" height="220" rx="12" fill="#fbe9e7" stroke="#a32020" stroke-width="2"/>
-  <circle cx="704" cy="274" r="15" fill="#a32020"/>
+  <rect x="672" y="240" width="256" height="220" rx="12" fill="#f9e9e8" stroke="#a3242a" stroke-width="2"/>
+  <circle cx="704" cy="274" r="15" fill="#a3242a"/>
   <text x="704" y="279" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">3</text>
-  <text x="732" y="279" font-size="12" fill="#a32020" letter-spacing="1.3" font-weight="600">CONTROLS</text>
-  <text x="696" y="322" font-size="19" font-weight="600" fill="#16191d">What must be true</text>
-  <text x="696" y="345" font-size="19" font-weight="600" fill="#16191d">before launch?</text>
-  <text x="696" y="377" font-size="13.5" fill="#4d545c">Human approval, action</text>
-  <text x="696" y="397" font-size="13.5" fill="#4d545c">log, redaction, injection</text>
-  <text x="696" y="417" font-size="13.5" fill="#4d545c">test, terms, kill switch.</text>
-  <text x="696" y="446" font-size="12" fill="#a32020" font-weight="700">The gate that stops things</text>
+  <text x="732" y="279" font-size="12" fill="#a3242a" letter-spacing="1.3" font-weight="600">CONTROLS</text>
+  <text x="696" y="322" font-size="19" font-weight="600" fill="#12151c">What must be true</text>
+  <text x="696" y="345" font-size="19" font-weight="600" fill="#12151c">before launch?</text>
+  <text x="696" y="377" font-size="13.5" fill="#4a5163">Human approval, action</text>
+  <text x="696" y="397" font-size="13.5" fill="#4a5163">log, redaction, injection</text>
+  <text x="696" y="417" font-size="13.5" fill="#4a5163">test, terms, kill switch.</text>
+  <text x="696" y="446" font-size="12" fill="#a3242a" font-weight="700">The gate that stops things</text>
 
   <!-- gate 4 -->
-  <rect x="968" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e0e0dc"/>
-  <circle cx="1000" cy="274" r="15" fill="#0f5c5c"/>
+  <rect x="968" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e2e4ea"/>
+  <circle cx="1000" cy="274" r="15" fill="#1f3a5f"/>
   <text x="1000" y="279" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">4</text>
-  <text x="1028" y="279" font-size="12" fill="#7c848d" letter-spacing="1.3">EVIDENCE</text>
-  <text x="992" y="322" font-size="19" font-weight="600" fill="#16191d">Show me proof</text>
-  <text x="992" y="354" font-size="13.5" fill="#4d545c">Red team results,</text>
-  <text x="992" y="374" font-size="13.5" fill="#4d545c">threshold config, log</text>
-  <text x="992" y="394" font-size="13.5" fill="#4d545c">samples. Dated, owned.</text>
-  <text x="992" y="432" font-size="12" fill="#7c848d">2 weeks · tester + risk</text>
+  <text x="1028" y="279" font-size="12" fill="#767d8e" letter-spacing="1.3">EVIDENCE</text>
+  <text x="992" y="322" font-size="19" font-weight="600" fill="#12151c">Show me proof</text>
+  <text x="992" y="354" font-size="13.5" fill="#4a5163">Red team results,</text>
+  <text x="992" y="374" font-size="13.5" fill="#4a5163">threshold config, log</text>
+  <text x="992" y="394" font-size="13.5" fill="#4a5163">samples. Dated, owned.</text>
+  <text x="992" y="432" font-size="12" fill="#767d8e">2 weeks · tester + risk</text>
 
   <!-- gate 5 -->
-  <rect x="1264" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e0e0dc"/>
-  <circle cx="1296" cy="274" r="15" fill="#0f5c5c"/>
+  <rect x="1264" y="240" width="256" height="220" rx="12" fill="#ffffff" stroke="#e2e4ea"/>
+  <circle cx="1296" cy="274" r="15" fill="#1f3a5f"/>
   <text x="1296" y="279" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">5</text>
-  <text x="1324" y="279" font-size="12" fill="#7c848d" letter-spacing="1.3">APPROVAL</text>
-  <text x="1288" y="322" font-size="19" font-weight="600" fill="#16191d">Who signs?</text>
-  <text x="1288" y="354" font-size="13.5" fill="#4d545c">One accountable exec,</text>
-  <text x="1288" y="374" font-size="13.5" fill="#4d545c">plus risk and legal.</text>
-  <text x="1288" y="394" font-size="13.5" fill="#4d545c">No signature, no deploy.</text>
-  <text x="1288" y="432" font-size="12" fill="#7c848d">30 min · exec, CRO, GC</text>
+  <text x="1324" y="279" font-size="12" fill="#767d8e" letter-spacing="1.3">APPROVAL</text>
+  <text x="1288" y="322" font-size="19" font-weight="600" fill="#12151c">Who signs?</text>
+  <text x="1288" y="354" font-size="13.5" fill="#4a5163">One accountable exec,</text>
+  <text x="1288" y="374" font-size="13.5" fill="#4a5163">plus risk and legal.</text>
+  <text x="1288" y="394" font-size="13.5" fill="#4a5163">No signature, no deploy.</text>
+  <text x="1288" y="432" font-size="12" fill="#767d8e">30 min · exec, CRO, GC</text>
 
   <!-- forward arrows between gates -->
-  <g stroke="#8b9198" stroke-width="1.6" marker-end="url(#arw)" fill="none">
+  <g stroke="#8f96a3" stroke-width="1.6" marker-end="url(#arw)" fill="none">
     <line x1="340" y1="350" x2="370" y2="350"/>
     <line x1="636" y1="350" x2="666" y2="350"/>
     <line x1="932" y1="350" x2="962" y2="350"/>
@@ -87,37 +87,37 @@
   </g>
 
   <!-- gate 3 fail loop: back into itself, with conditions attached -->
-  <path d="M820 462 L820 500 L722 500 L722 466" stroke="#a32020" stroke-width="1.8"
+  <path d="M820 462 L820 500 L722 500 L722 466" stroke="#a3242a" stroke-width="1.8"
         fill="none" stroke-dasharray="6 5" marker-end="url(#arwr)"/>
-  <text x="842" y="496" font-size="13.5" fill="#a32020" font-weight="600">Fails → launch conditions attached, go-live date held → re-run</text>
+  <text x="842" y="496" font-size="13.5" fill="#a3242a" font-weight="600">Fails → launch conditions attached, go-live date held → re-run</text>
 
   <!-- model change loop: gate 6 back to gate 2 -->
-  <path d="M1264 660 L1224 660 L1224 528 L504 528 L504 466" stroke="#0f5c5c" stroke-width="1.8"
+  <path d="M1264 660 L1224 660 L1224 528 L504 528 L504 466" stroke="#1f3a5f" stroke-width="1.8"
         fill="none" stroke-dasharray="6 5" marker-end="url(#arwt)"/>
-  <text x="536" y="519" font-size="13.5" fill="#0f5c5c" font-weight="600">Supplier changes the model version → gate 2 re-runs in light mode</text>
+  <text x="536" y="519" font-size="13.5" fill="#1f3a5f" font-weight="600">Model version or tool permissions change → gate 2 re-runs in light mode</text>
 
   <!-- ── row 2: gate 6 + worked example ─────────────────────────────── -->
 
   <!-- gate 6 -->
-  <rect x="1264" y="570" width="256" height="230" rx="12" fill="#ffffff" stroke="#e0e0dc"/>
-  <circle cx="1296" cy="604" r="15" fill="#0f5c5c"/>
+  <rect x="1264" y="570" width="256" height="230" rx="12" fill="#ffffff" stroke="#e2e4ea"/>
+  <circle cx="1296" cy="604" r="15" fill="#1f3a5f"/>
   <text x="1296" y="609" font-size="14" fill="#fff" text-anchor="middle" font-weight="700">6</text>
-  <text x="1324" y="609" font-size="12" fill="#7c848d" letter-spacing="1.3">MONITORING</text>
-  <text x="1288" y="652" font-size="19" font-weight="600" fill="#16191d">Is it still safe?</text>
-  <text x="1288" y="684" font-size="13.5" fill="#4d545c">Metrics with thresholds,</text>
-  <text x="1288" y="704" font-size="13.5" fill="#4d545c">the 2am incident path,</text>
-  <text x="1288" y="724" font-size="13.5" fill="#4d545c">model change re-check,</text>
-  <text x="1288" y="744" font-size="13.5" fill="#4d545c">review date, retirement.</text>
-  <text x="1288" y="778" font-size="12" fill="#7c848d">30 min · ops + risk</text>
+  <text x="1324" y="609" font-size="12" fill="#767d8e" letter-spacing="1.3">MONITORING</text>
+  <text x="1288" y="652" font-size="19" font-weight="600" fill="#12151c">Is it still safe?</text>
+  <text x="1288" y="684" font-size="13.5" fill="#4a5163">Metrics with thresholds,</text>
+  <text x="1288" y="704" font-size="13.5" fill="#4a5163">the 2am incident path,</text>
+  <text x="1288" y="724" font-size="13.5" fill="#4a5163">model change re-check,</text>
+  <text x="1288" y="744" font-size="13.5" fill="#4a5163">review date, retirement.</text>
+  <text x="1288" y="778" font-size="12" fill="#767d8e">30 min · ops + risk</text>
 
   <!-- worked example -->
-  <rect x="80" y="570" width="1104" height="230" rx="12" fill="#ffffff" stroke="#cfd0ca"/>
-  <text x="112" y="610" font-size="12" letter-spacing="1.6" fill="#a32020" font-weight="700">THE WORKED EXAMPLE</text>
-  <text x="112" y="648" font-size="20" font-weight="600" fill="#16191d">Ava reverses fees up to $50. She failed gate 3 on the first pass.</text>
-  <text x="112" y="686" font-size="14.5" fill="#4d545c">The $50 ceiling was a sentence in the system prompt rather than a check in code, and no register recorded which agent</text>
-  <text x="112" y="710" font-size="14.5" fill="#4d545c">decision caused which reversal — the ledger showed adjustments with no author. Two launch conditions were attached,</text>
-  <text x="112" y="734" font-size="14.5" fill="#4d545c">go-live moved from 5 October to 2 November, and the gate was re-run before anyone signed anything.</text>
-  <text x="112" y="772" font-size="13" fill="#7c848d" font-style="italic">Northbridge Credit Union and Ava are fictional. No vendor, product or model is named anywhere in this project.</text>
+  <rect x="80" y="570" width="1104" height="230" rx="12" fill="#ffffff" stroke="#c7cad4"/>
+  <text x="112" y="610" font-size="12" letter-spacing="1.6" fill="#a3242a" font-weight="700">THE WORKED EXAMPLE</text>
+  <text x="112" y="648" font-size="20" font-weight="600" fill="#12151c">Ava reverses fees up to $50. She failed gate 3 on the first pass.</text>
+  <text x="112" y="686" font-size="14.5" fill="#4a5163">The $50 ceiling was a sentence in the system prompt rather than a check in code, and no register recorded which agent</text>
+  <text x="112" y="710" font-size="14.5" fill="#4a5163">decision caused which reversal — the ledger showed adjustments with no author. Two launch conditions were attached,</text>
+  <text x="112" y="734" font-size="14.5" fill="#4a5163">go-live moved from 5 October to 2 November, and the gate was re-run before anyone signed anything.</text>
+  <text x="112" y="772" font-size="13" fill="#767d8e" font-style="italic">Northbridge Credit Union and Ava are fictional. No vendor, product or model is named anywhere in this project.</text>
 
-  <text x="80" y="858" font-size="13" fill="#7c848d">Structured on NIST AI RMF 1.0 · checked against Regulation (EU) 2024/1689</text>
+  <text x="80" y="858" font-size="13" fill="#767d8e">Structured on NIST AI RMF 1.0 · checked against Regulation (EU) 2024/1689</text>
 </svg>

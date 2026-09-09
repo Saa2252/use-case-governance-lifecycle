@@ -272,8 +272,8 @@ const CONTROLS = [
     id: 'model-change',
     group: 'Third party',
     name: 'Model change control',
-    plain: 'The version is pinned. When the supplier deprecates it or you move, gate 2 re-runs in light mode before the new version reaches members.',
-    ask: 'What happens to this approval when the supplier retires the version you tested?',
+    plain: 'The version is pinned. When the supplier deprecates it, or Ava\'s tool permissions change, gate 2 re-runs in light mode before the change reaches members.',
+    ask: 'What happens to this approval when the model changes — or when someone changes what Ava is allowed to do?',
     req: () => true,
     nist: ['MANAGE 3.1', 'MEASURE 3.1', 'GOVERN 6.1'],
     eu: ['Art. 72 post-market monitoring (if high-risk)']

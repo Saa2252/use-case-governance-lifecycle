@@ -1,21 +1,24 @@
 /* Use Case Governance Lifecycle — styles */
 
+/* Cool neutral base + deep navy accent — closer to the register of real GRC
+   /  enterprise-risk tooling (Vanta, Drata, OneTrust, ServiceNow) than the
+   warmer teal-on-cream a consumer or wellness product would use. */
 :root {
-  --bg: #f6f6f4;
+  --bg: #f3f4f7;
   --panel: #ffffff;
-  --ink: #16191d;
-  --ink2: #4d545c;
-  --ink3: #7c848d;
-  --line: #e0e0dc;
-  --line2: #cfd0ca;
-  --accent: #0f5c5c;
-  --accent-soft: #e6f0ef;
-  --ok: #1f6b3f;
-  --ok-soft: #e6f2ea;
+  --ink: #12151c;
+  --ink2: #4a5163;
+  --ink3: #767d8e;
+  --line: #e2e4ea;
+  --line2: #c7cad4;
+  --accent: #1f3a5f;
+  --accent-soft: #e7ecf3;
+  --ok: #196b45;
+  --ok-soft: #e3f1ea;
   --warn: #8a5a00;
-  --warn-soft: #fbf0da;
-  --bad: #a32020;
-  --bad-soft: #fbe9e7;
+  --warn-soft: #f7eeda;
+  --bad: #a3242a;
+  --bad-soft: #f9e9e8;
   --radius: 10px;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
@@ -23,10 +26,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14161a; --panel: #1c1f24; --ink: #eceef0; --ink2: #b3b9c0; --ink3: #858c95;
-    --line: #2c3037; --line2: #3a3f47; --accent: #4fb3ac; --accent-soft: #17302f;
-    --ok: #6dc48d; --ok-soft: #16281d; --warn: #d9a441; --warn-soft: #2c2415;
-    --bad: #e08a80; --bad-soft: #2e1917;
+    --bg: #0e1014; --panel: #171a21; --ink: #edeef2; --ink2: #a8afbd; --ink3: #767e8e;
+    --line: #262a33; --line2: #333846; --accent: #5085b8; --accent-soft: #172a3f;
+    --ok: #5fbf8a; --ok-soft: #12281c; --warn: #d9a441; --warn-soft: #2a2013;
+    --bad: #dd8481; --bad-soft: #301a1a;
   }
 }
 
