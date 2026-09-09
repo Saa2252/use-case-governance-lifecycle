@@ -42,7 +42,16 @@ These are less contested than the Annex III question, though the same disclaimer
 | **Article 4** — AI literacy | Northbridge must ensure a sufficient level of AI literacy among staff operating the system. In practice, the member-services team approving held reversals. | In application since 2 February 2025 |
 | **Article 25** — value chain | If Northbridge puts its own name or trademark on the system in a way that makes it a provider rather than a deployer, the obligation set changes materially. Worth a written legal position, not an assumption. | — |
 | **GDPR** | Doing most of the real work in this use case: Article 5(1)(c) minimisation behind the `pii-redaction` control, Article 5(1)(e) and Article 17 behind `retention`, Article 35 DPIA, Article 33 breach notification behind `incident-path`. | — |
+| **GDPR Art. 22** | The right not to be subject to a decision based solely on automated processing that produces legal or similarly significant effects. A fee reversal is a financial decision about a specific member, decided by Ava alone below the approval threshold — this sits closer to the case Article 22 exists for than any other provision in this table. See note below; no control in the library currently operationalises it. | — |
 | **DORA** (EU financial entities) | Articles 28–30 on ICT third-party risk are arguably the sharper instrument for the supplier relationship than anything in the AI Act. | In application since 17 January 2025 |
+
+### Article 22 — the gap this project doesn't close
+
+This was missing from an earlier draft, and it's worth being explicit about rather than quietly folding it into the general GDPR line above. Article 22 requires more than what's already built: the right to obtain human intervention, to express a point of view, and **to contest the decision after it was made** — not just to have a human review it before it lands.
+
+Two existing controls come close but don't cover it. `human-approval` is preventive — a human sees the decision *before* it executes, and only above the $25 threshold; below that, Ava decides alone with nothing Article 22 would recognise as a contest path. `disclosure` routes general queries to a person, but that's a front-door escape hatch, not a mechanism aimed at *this specific reversal decision* after the fact.
+
+Closing this properly would mean a control roughly like: *every automated decision carries a stated reason and a one-click path to a human who can overturn it, logged as a contest rather than a routine query.* That control does not exist in this library. Naming the gap here rather than either ignoring it or quietly adding a fifteenth control without discussing what it should actually require.
 
 ### The line to watch
 

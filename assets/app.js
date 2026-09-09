@@ -445,17 +445,18 @@ function g6() {
 
   const rc = state.recheck;
   const recheckPanel = rc
-    ? `<div class="banner ${rc.done ? 'go' : 'stop'}">
-        <h3>${rc.done ? 'Light re-check complete' : 'Something changed underneath the approval — light re-check required'}</h3>
-        <p>${rc.done
-          ? 'Gate 2 was re-run in light mode and the tier held. The approval remains valid and the review date was reset.'
+    ? `<div class="banner ${rc.done ? (rc.tierChanged ? 'stop' : 'go') : 'stop'}">
+        <h3>${rc.done
+          ? (rc.tierChanged ? 'Light re-check found a real change' : 'Light re-check complete')
+          : 'Something changed underneath the approval — light re-check required'}</h3>
+        <p>${rc.done ? rc.summary
           : 'The model version moved, or Ava\'s tool permissions changed — either one trips the same wire. This does not re-open the whole lifecycle — it re-opens gate 2 in light mode. Four questions, one reviewer, same day.'}</p>
         ${!rc.done ? `<ul style="margin:0 0 12px;padding-left:18px;font-size:13.5px;color:var(--ink2)">
           <li>Do the tool permissions still match what was approved?</li>
           <li>Did any answer at gate 2 change?</li>
           <li>Re-run the prompt injection suite against the change — same result?</li>
           <li>Re-run the threshold test — does it still stop at the configured number?</li>
-        </ul><button class="primary" data-act="rechecked">Re-check done, tier holds</button>` : ''}
+        </ul><button class="primary" data-act="rechecked">Run the re-check</button>` : ''}
       </div>`
     : '';
 
@@ -622,13 +623,46 @@ const actions = {
   seedev()     { seedEvidence(state); render(); },
   seedmon()    { seedMonitoring(state); render(); },
   modelchange() {
-    state.recheck = { done: false };
+    // Snapshot what was actually true at the moment of the trigger, so the
+    // re-check below can report a real diff instead of a scripted outcome.
+    const r = assessRisk();
+    state.recheck = {
+      done: false,
+      beforeTier: r ? r.tier : null,
+      beforeControls: requiredControls().map(c => c.id)
+    };
     log('fail', `<b>Something changed underneath the approval.</b> Either the supplier moved the model version, or Ava's tool permissions changed — the policy treats both as the same trigger. Gate 2 re-opens in light mode before the change reaches members.`);
     render();
   },
   rechecked() {
-    state.recheck = { done: true };
-    log('pass', `<b>Light re-check complete.</b> Tier held at Tier 1. Injection suite and threshold test re-run against the change, same results. Approval remains valid; review date reset.`);
+    // This re-runs the real tiering logic against whatever state.risk holds
+    // right now — it is not a canned "still fine" message. If gate 2's
+    // answers were edited before this fires, the diff below reflects that.
+    const before = state.recheck || {};
+    const r = assessRisk();
+    const nowControls = requiredControls().map(c => c.id);
+    const priorControls = before.beforeControls || [];
+    const added = nowControls.filter(id => !priorControls.includes(id));
+    const removed = priorControls.filter(id => !nowControls.includes(id));
+    const tierChanged = !!(before.beforeTier && r && before.beforeTier !== r.tier);
+    const controlsChanged = added.length || removed.length;
+
+    let summary;
+    if (!r) {
+      summary = 'Gate 2 is incomplete, so there is nothing to re-check against. Answer it before this can close.';
+    } else if (tierChanged) {
+      summary = `Tier moved from <b>${esc(TIERS[before.beforeTier].name)}</b> to <b>${esc(TIERS[r.tier].name)}</b>. A light re-check does not get to absorb that — this escalates to a full gate 2 and gate 3 review before the change ships.`;
+    } else {
+      summary = `Gate 2 was re-run against the current risk answers. Tier held at <b>${esc(TIERS[r.tier].name)}</b>` +
+        (controlsChanged
+          ? `, though the required control set shifted — ${added.length} newly required, ${removed.length} no longer required.`
+          : ', and the required control set is unchanged.') +
+        ' Approval remains valid; review date reset.';
+    }
+
+    state.recheck = { done: true, tierChanged, added, removed, summary };
+    log(tierChanged || !r ? 'fail' : 'pass',
+      `<b>${tierChanged ? 'Light re-check found a real change.' : 'Light re-check complete.'}</b> ${summary}`);
     render();
   }
 };

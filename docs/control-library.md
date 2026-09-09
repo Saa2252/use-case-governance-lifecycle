@@ -215,9 +215,9 @@ No training on member data, named subprocessors, data residency, breach notifica
 
 #### Model change control
 
-The version is pinned. When the supplier deprecates it or you move, gate 2 re-runs in light mode before the new version reaches members.
+The version is pinned. When the supplier deprecates it, or Ava's tool permissions change, gate 2 re-runs in light mode before the change reaches members.
 
-**Ask in the room:** What happens to this approval when the supplier retires the version you tested?
+**Ask in the room:** What happens to this approval when the model changes — or when someone changes what Ava is allowed to do?
 
 **NIST AI RMF:** MANAGE 3.1, MEASURE 3.1, GOVERN 6.1
 
