@@ -8,7 +8,7 @@ A working single-page app that takes one AI agent from intake to approval to mon
 
 The worked example is **Ava**, a customer support agent at a fictional credit union. Ava does not pass on the first attempt. The gate she fails is the point of the whole project.
 
-🔗 **[Open the lifecycle](https://example.github.io/ai-governance-lifecycle/)** — walk the Ava record, or switch to blank mode and register your own agent.
+🔗 **[Open the lifecycle](https://example.github.io/ai-governance-lifecycle/)** — walk the Ava record from intake to approval.
 
 ![The six-gate lifecycle](media/00-lifecycle-diagram.png)
 

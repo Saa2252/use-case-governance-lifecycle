@@ -8,7 +8,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const KEY = 'ucgl-v1';
+const KEY = 'ucgl-v2'; // bumped from v1 so a stale blank-mode save never leaks back in
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
 function fmt(iso) {
@@ -23,30 +23,20 @@ function today() { return new Date().toISOString().slice(0, 10); }
 
 let state;
 
-function blankState() {
-  return {
-    mode: 'blank', gate: 1, regs: false,
-    intake: {}, risk: {}, controls: {}, evidence: {}, conditions: {},
-    signatures: {
-      exec:  { role: 'Accountable executive', name: '', title: '', date: '' },
-      risk:  { role: 'Risk', name: '', title: '', date: '' },
-      legal: { role: 'Legal / Data Protection', name: '', title: '', date: '' }
-    },
+// The record always starts as Ava at first pass. There is no blank mode —
+// this is a single worked example, not a general-purpose risk calculator.
+function avaState() {
+  const s = {
+    gate: 1, regs: false,
+    intake: { ...AVA.intake },
+    risk: { ...AVA.risk },
+    controls: JSON.parse(JSON.stringify(AVA.controlsFirstPass)),
+    evidence: {}, // arrives later in the story, at gate 4
+    conditions: {},
+    signatures: JSON.parse(JSON.stringify(AVA.signatures)),
     monitoring: { metrics: [], incident: '', modelChange: '', review: '', retire: '' },
     log: [], conditionsApplied: false, recheck: null
   };
-}
-
-function avaState() {
-  const s = blankState();
-  s.mode = 'ava';
-  s.intake = { ...AVA.intake };
-  s.risk = { ...AVA.risk };
-  s.controls = JSON.parse(JSON.stringify(AVA.controlsFirstPass));
-  s.signatures = JSON.parse(JSON.stringify(AVA.signatures));
-  // Evidence (gate 4) and the monitoring plan (gate 6) arrive later in the
-  // story, so the rail shows the record as it actually stood at first pass.
-  s.evidence = {};
   s.log = [
     { t: '2026-08-05', k: 'pass', m: '<b>Gate 1 — What is it?</b> Intake completed. Four tool permissions declared, including fee reversal.' },
     { t: '2026-08-12', k: '',     m: '<b>Supplier terms</b> reviewed by Legal. No-training clause confirmed at §7.3.' },
@@ -157,8 +147,6 @@ function render() {
   renderStage();
   renderLog();
   $('#regtoggle').checked = state.regs;
-  $('#mode-ava').classList.toggle('on', state.mode === 'ava');
-  $('#mode-blank').classList.toggle('on', state.mode === 'blank');
   save();
 }
 
@@ -298,8 +286,7 @@ function g3() {
 
   let banner = '';
   if (failing.length) {
-    const canApply = state.mode === 'ava' && !state.conditionsApplied &&
-      failing.every(c => AVA.conditions[c.id]);
+    const canApply = !state.conditionsApplied && failing.every(c => AVA.conditions[c.id]);
     banner = `<div class="banner stop">
       <h3>Gate 3 not passed — ${failing.length} required control${failing.length > 1 ? 's are' : ' is'} not in place</h3>
       <p>${failing.map(c => esc(c.name)).join(' · ')}</p>
@@ -357,7 +344,7 @@ function g4() {
     <p>Work through gates 2 and 3 first.</p></div>` + navRow();
 
   const missing = req.filter(c => !(state.evidence[c.id] || []).length);
-  const seedable = state.mode === 'ava' && missing.length;
+  const seedable = missing.length;
 
   const banner = missing.length
     ? `<div class="banner stop"><h3>${missing.length} control${missing.length > 1 ? 's have' : ' has'} no evidence</h3>
@@ -451,7 +438,7 @@ function g6() {
     <input type="text" data-nm="act" placeholder="What happens if it breaches" style="min-width:180px">
     <button class="ghost" data-act="addmetric">Add</button></div>`;
 
-  const seedable = state.mode === 'ava' && !(m.metrics || []).length;
+  const seedable = !(m.metrics || []).length;
   const seedBanner = seedable ? `<div class="banner info"><h3>The monitoring plan Northbridge agreed</h3>
     <p>Gate 5 approves a snapshot. Everything below is what turns that snapshot into something that stays true — and it is agreed before the executive signs, not after.</p>
     <button class="primary" data-act="seedmon">Load the Northbridge monitoring plan</button></div>` : '';
@@ -557,8 +544,9 @@ function wire() {
       inp.placeholder = 'A signature needs a name — type it here first';
       return;
     }
-    // The worked example signs on its story date so the decision log stays in order.
-    const on = state.mode === 'ava' ? AVA.signDate : today();
+    // Signs on the story's date, not the visitor's real one, so the decision
+    // log stays in chronological order however long after launch someone clicks.
+    const on = AVA.signDate;
     s.date = on;
     log('pass', `<b>${esc(s.role)}</b> signed: ${esc(s.name)}${s.title ? `, ${esc(s.title)}` : ''}.`, on);
     if (Object.values(state.signatures).every(x => x.date)) {
@@ -666,7 +654,7 @@ function renderRecord() {
   const html = `
   <div class="rechead">
     <h3 style="margin:0">${esc(v.name || 'Unnamed use case')} — approval record</h3>
-    <p style="margin:4px 0 0">Generated ${fmt(today())} · ${esc(state.mode === 'ava' ? 'Northbridge Credit Union' : 'Your organisation')}</p>
+    <p style="margin:4px 0 0">Generated ${fmt(today())} · Northbridge Credit Union</p>
     <span class="stamp-big ${ok ? 'ok' : 'bad'}">${status}</span>
   </div>
 
@@ -792,17 +780,14 @@ function applyDeepLink() {
   return false;
 }
 
-$('#startbtn').onclick = () => { if (state.mode !== 'ava') start(avaState()); openApp(); };
+$('#startbtn').onclick = () => { openApp(); };
 $('#jumpfail').onclick = e => {
   e.preventDefault();
-  if (state.mode !== 'ava') start(avaState());
   state.gate = 3; openApp(); window.scrollTo(0, 0);
 };
-$('#mode-ava').onclick = () => { start(avaState()); openApp(); };
-$('#mode-blank').onclick = () => { start(blankState()); openApp(); };
 $('#resetbtn').onclick = () => {
   if (!confirm('Clear this record and start again?')) return;
-  start(state.mode === 'ava' ? avaState() : blankState());
+  start(avaState());
 };
 $('#regtoggle').onchange = e => { state.regs = e.target.checked; render(); };
 $('#recordbtn').onclick = renderRecord;

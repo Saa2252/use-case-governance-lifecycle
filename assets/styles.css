@@ -73,17 +73,6 @@ h1, h2, h3, h4 { line-height: 1.25; margin: 0; font-weight: 600; letter-spacing:
 
 .topctl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-.seg-wrap { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
-
-.seg { display: inline-flex; border: 1px solid var(--line2); border-radius: 8px; overflow: hidden; }
-.seg button {
-  border: 0; background: transparent; color: var(--ink2);
-  padding: 6px 13px; font-size: 13px;
-}
-.seg button.on { background: var(--accent); color: #fff; }
-
-.seghint { font-size: 11px; color: var(--ink3); max-width: 240px; line-height: 1.35; }
-
 .tog { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink2); cursor: pointer; }
 .tog input { accent-color: var(--accent); }
 
