@@ -23,6 +23,13 @@ function today() { return new Date().toISOString().slice(0, 10); }
 
 let state;
 
+// Whether the visitor has manually opened the (normally collapsed) Article 5
+// screen. Deliberately NOT part of `state` — it's a UI preference, not part
+// of the governance record, and shouldn't round-trip through the exported
+// approval record. Tracked separately so that clicking a Yes/No toggle
+// inside it (which re-renders the whole gate) doesn't snap it shut again.
+let prohOpen = false;
+
 // The record always starts as Ava at first pass. There is no blank mode —
 // this is a single worked example, not a general-purpose risk calculator.
 function avaState() {
@@ -259,19 +266,34 @@ function g1() {
       `<li><b>${esc(c.article)}</b> — ${esc(c.q)}</li>`).join('')}</ul>
   </div>` : '';
 
-  const prohibitedCard = `<div class="card"><h3>Before anything else: Article 5 screen</h3>
-    <p class="hint">Eight questions. Most systems clear all eight in under a minute — the point is not thoroughness, it is catching the rare one that was never going to be approvable, before time is spent tiering it. A "yes" is not "add more controls". It is "stop".</p>
-    ${PROHIBITED_CHECKS.map(c => {
-      const ans = p[c.id];
-      return `<div class="prohcheck">
-        <span class="q">${esc(c.q)}</span><span class="art">${esc(c.article)}</span>
-        <div class="states">
-          <button data-proh="${c.id}" data-s="clear" class="${ans === false ? 'on' : ''}">No</button>
-          <button data-proh="${c.id}" data-s="flag" class="${ans === true ? 'on' : ''}">Yes</button>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>`;
+  // Collapsed by default so a clean pass (the ordinary case) doesn't cost a
+  // skimming reviewer eight rows of scroll — but never collapsed while
+  // something is actually flagged, and stays open once a visitor opens it
+  // manually (see prohOpen above).
+  const isOpen = flagged || prohOpen;
+  const summaryLabel = flagged
+    ? `${flaggedChecks.length} of ${PROHIBITED_CHECKS.length} flagged`
+    : `all ${PROHIBITED_CHECKS.length} cleared`;
+  const summaryColor = flagged ? 'var(--bad)' : 'var(--ok)';
+
+  const prohibitedCard = `<details class="card prohdetails" ${isOpen ? 'open' : ''}>
+    <summary>Before anything else: Article 5 screen
+      <span class="prohsummary" style="color:${summaryColor}">${esc(summaryLabel)}</span>
+    </summary>
+    <div class="prohbody">
+      <p class="hint">Eight questions. Most systems clear all eight in under a minute — the point is not thoroughness, it is catching the rare one that was never going to be approvable, before time is spent tiering it. A "yes" is not "add more controls". It is "stop".</p>
+      ${PROHIBITED_CHECKS.map(c => {
+        const ans = p[c.id];
+        return `<div class="prohcheck">
+          <span class="q">${esc(c.q)}</span><span class="art">${esc(c.article)}</span>
+          <div class="states">
+            <button data-proh="${c.id}" data-s="clear" class="${ans === false ? 'on' : ''}">No</button>
+            <button data-proh="${c.id}" data-s="flag" class="${ans === true ? 'on' : ''}">Yes</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </details>`;
 
   return reg + prohibitedStop + prohibitedCard + `<div class="card"><h3>Intake</h3>
     <p class="hint">Answer as if writing for someone who joins the review halfway through and has no context.</p>
@@ -558,6 +580,8 @@ function wire() {
     if (!val && was === true) log('pass', `<b>${esc(c.article)} cleared.</b> No longer flagged.`);
     render();
   });
+
+  $$('.prohdetails').forEach(d => d.ontoggle = () => { prohOpen = d.open; });
 
   $$('[data-risk]').forEach(el => el.onchange = () => {
     const before = assessRisk();
@@ -927,6 +951,7 @@ $('#jumpfail').onclick = e => {
 };
 $('#resetbtn').onclick = () => {
   if (!confirm('Clear this record and start again?')) return;
+  prohOpen = false;
   start(avaState());
 };
 $('#regtoggle').onchange = e => { state.regs = e.target.checked; render(); };

@@ -268,6 +268,24 @@ input[type=text]:focus, textarea:focus, select:focus { outline: 2px solid var(--
   margin-left: 8px; white-space: nowrap; }
 .prohcheck .states { margin-top: 9px; }
 
+/* Collapsed by default: a clean pass (the ordinary case) shouldn't cost a
+   skimming reviewer eight rows of scroll. <details>/<summary> rather than
+   a hand-rolled JS toggle — free keyboard support, no extra state to manage
+   for open/closed beyond remembering a manual open across re-renders. */
+.prohdetails > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 9px;
+  font-size: 15px; font-weight: 600; color: var(--ink);
+}
+.prohdetails > summary::-webkit-details-marker { display: none; }
+.prohdetails > summary::before {
+  content: '▸'; font-size: 11px; color: var(--ink3); flex: none;
+  transition: transform .15s ease;
+}
+.prohdetails[open] > summary::before { transform: rotate(90deg); }
+.prohdetails[open] > summary { margin-bottom: 4px; }
+.prohsummary { margin-left: auto; font-size: 12px; font-weight: 600; }
+.prohbody { margin-top: 14px; }
+
 .ctrl textarea { margin-top: 11px; min-height: 54px; font-size: 13.5px; }
 
 .condbox { margin-top: 12px; padding: 12px 14px; border-radius: 8px;
