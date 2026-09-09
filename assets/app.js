@@ -66,21 +66,30 @@ function riskAnswers() {
   return a;
 }
 
+// Tier cutoffs (TIER1_AVG_SEVERITY, TIER3_AVG_SEVERITY) live in data.js next
+// to TIERS — they're a policy decision, not rendering logic.
+function tierFromAverage(avg) {
+  return avg >= TIER1_AVG_SEVERITY ? 1 : avg >= TIER3_AVG_SEVERITY ? 2 : 3;
+}
+
 function assessRisk() {
   const a = state.risk;
   const answered = RISK_QUESTIONS.every(q => typeof a[q.id] === 'number');
   if (!answered) return null;
 
-  const raw = RISK_QUESTIONS.reduce((n, q) => n + a[q.id], 0);
-  const max = RISK_QUESTIONS.length * 3;
+  const totalWeight = RISK_QUESTIONS.reduce((n, q) => n + q.weight, 0);
+  const raw = RISK_QUESTIONS.reduce((n, q) => n + q.weight * a[q.id], 0);
+  const max = totalWeight * 3;
+  const avg = raw / totalWeight; // weighted average severity, 0-3 scale
 
   // Arithmetic gives a starting position; escalation rules can only move it up.
-  let tier = raw >= max * 0.6 ? 1 : raw >= max * 0.33 ? 2 : 3;
+  let tier = tierFromAverage(avg);
+  const base = tier;
 
   const fired = ESCALATIONS.filter(e => e.test(a));
   fired.forEach(e => { if (e.floor < tier) tier = e.floor; });
 
-  return { tier, raw, max, fired, base: raw >= max * 0.6 ? 1 : raw >= max * 0.33 ? 2 : 3 };
+  return { tier, raw, max, avg, fired, base };
 }
 
 function requiredControls() {
@@ -92,13 +101,23 @@ function requiredControls() {
 
 /* ------------------------------------------------------- gate status ---- */
 
+// A "yes" on any Article 5 screen is a stop, not a higher tier — distinct
+// enough from the rest of gate 1 that it gets its own check rather than
+// being folded into the ordinary required-fields test below.
+function prohibitedFlagged() {
+  const p = state.intake.prohibited || {};
+  return PROHIBITED_CHECKS.some(c => p[c.id] === true);
+}
+
 function gateStatus(n) {
   const r = assessRisk();
   const req = requiredControls();
 
   if (n === 1) {
+    if (prohibitedFlagged()) return 'fail';
     const need = ['name', 'purpose', 'owner', 'users'];
-    const ok = need.every(k => state.intake[k]) && (state.intake.tools || []).length > 0;
+    const ok = need.every(k => state.intake[k]) && (state.intake.tools || []).length > 0 &&
+      PROHIBITED_CHECKS.every(c => typeof (state.intake.prohibited || {})[c.id] === 'boolean');
     return ok ? 'done' : 'open';
   }
   if (n === 2) return r ? 'done' : 'open';
@@ -130,7 +149,9 @@ function gateStatus(n) {
 
 function approvalBlockers() {
   const out = [];
-  if (gateStatus(1) !== 'done') out.push('Gate 1 intake is incomplete.');
+  const g1 = gateStatus(1);
+  if (g1 === 'fail') out.push('Gate 1 has flagged an Article 5 prohibited practice — this cannot proceed to approval under any control set.');
+  else if (g1 !== 'done') out.push('Gate 1 intake is incomplete.');
   if (gateStatus(2) !== 'done') out.push('Gate 2 risk tier has not been assigned.');
   const g3 = gateStatus(3);
   if (g3 === 'fail') out.push('Gate 3 has required controls that are not in place.');
@@ -227,7 +248,32 @@ function g1() {
     <p>NIST AI RMF puts this in <strong>MAP</strong> — you cannot manage a risk you have not described. MAP 1.1 asks for intended purpose and context; MAP 2.1 asks for the specific tasks the system performs. The tool permission list is the part most intake forms miss, and it is the part that makes an agent different from a model.</p>
     <p>Under the EU AI Act, this is the evidence base for the classification decision under <strong>Article 6</strong>. You cannot argue you are outside Annex III unless you have written down what the thing actually does.</p></div>` : '';
 
-  return reg + `<div class="card"><h3>Intake</h3>
+  const p = v.prohibited || {};
+  const flagged = prohibitedFlagged();
+  const flaggedChecks = PROHIBITED_CHECKS.filter(c => p[c.id] === true);
+
+  const prohibitedStop = flagged ? `<div class="banner stop">
+    <h3>Article 5 prohibited practice flagged — stop here</h3>
+    <p>This is not a higher risk tier. Under the EU AI Act, the practice below is not permitted to place on the market or put into service in the EU, subject only to narrow statutory exceptions. No control set at gate 3 makes this approvable. Nothing past this point should be built until legal gives a written answer.</p>
+    <ul style="margin:0;padding-left:18px;font-size:13.5px;color:var(--ink2)">${flaggedChecks.map(c =>
+      `<li><b>${esc(c.article)}</b> — ${esc(c.q)}</li>`).join('')}</ul>
+  </div>` : '';
+
+  const prohibitedCard = `<div class="card"><h3>Before anything else: Article 5 screen</h3>
+    <p class="hint">Eight questions. Most systems clear all eight in under a minute — the point is not thoroughness, it is catching the rare one that was never going to be approvable, before time is spent tiering it. A "yes" is not "add more controls". It is "stop".</p>
+    ${PROHIBITED_CHECKS.map(c => {
+      const ans = p[c.id];
+      return `<div class="prohcheck">
+        <span class="q">${esc(c.q)}</span><span class="art">${esc(c.article)}</span>
+        <div class="states">
+          <button data-proh="${c.id}" data-s="clear" class="${ans === false ? 'on' : ''}">No</button>
+          <button data-proh="${c.id}" data-s="flag" class="${ans === true ? 'on' : ''}">Yes</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  return reg + prohibitedStop + prohibitedCard + `<div class="card"><h3>Intake</h3>
     <p class="hint">Answer as if writing for someone who joins the review halfway through and has no context.</p>
     ${fields}</div>` + navRow();
 }
@@ -238,7 +284,8 @@ function g2() {
   const sev = ['Low', 'Moderate', 'High', 'Severe'];
   const qs = RISK_QUESTIONS.map(q => {
     const cur = state.risk[q.id];
-    return `<div class="rq"><span class="lab">${esc(q.label)}</span><p class="why">${esc(q.why)}</p>
+    const wtag = q.weight === 2 ? ` <span class="wtag" title="${esc(q.weightWhy)}">weighted ×2</span>` : '';
+    return `<div class="rq"><span class="lab">${esc(q.label)}${wtag}</span><p class="why">${esc(q.why)}</p>
       <div class="opts">${q.options.map((o, i) =>
         `<label class="opt ${cur === i ? 'sel' : ''}">
            <input type="radio" name="rq-${q.id}" data-risk="${q.id}" value="${i}" ${cur === i ? 'checked' : ''}>
@@ -254,7 +301,7 @@ function g2() {
     verdict = `<div class="verdict ${t.klass}">
       <h3>${esc(t.name)}</h3>
       <p>${esc(t.means)}</p>
-      <p style="font-size:13px">Raw exposure score ${r.raw} of ${r.max}${moved ? `, which on arithmetic alone would be ${esc(TIERS[r.base].name)}. It was escalated because of the combinations below.` : '.'}</p>
+      <p style="font-size:13px">Weighted exposure ${r.raw} of ${r.max} — average severity <b>${r.avg.toFixed(1)} of 3</b>. Tier 1 begins at High (${TIER1_AVG_SEVERITY.toFixed(1)}) on average; Tier 3 requires staying under Moderate (${TIER3_AVG_SEVERITY.toFixed(1)})${moved ? `. On that average alone this would be ${esc(TIERS[r.base].name)} — it was escalated because of the combinations below.` : '.'}</p>
       ${r.fired.length ? `<ul>${r.fired.map(e =>
         `<li><b>Tier ${e.floor} floor:</b> ${esc(e.say)}</li>`).join('')}</ul>`
         : '<p style="font-size:13px;margin:0">No escalation rules fired. The tier comes from the answers alone.</p>'}
@@ -495,6 +542,20 @@ function wire() {
     const cur = new Set(state.intake[k] || []);
     el.checked ? cur.add(el.value) : cur.delete(el.value);
     state.intake[k] = [...cur];
+    render();
+  });
+
+  $$('[data-proh]').forEach(b => b.onclick = () => {
+    const id = b.dataset.proh, val = b.dataset.s === 'flag';
+    const c = PROHIBITED_CHECKS.find(x => x.id === id);
+    const was = (state.intake.prohibited || {})[id];
+    // Always replace the object rather than mutate the existing one in
+    // place — state.intake was a shallow spread of AVA.intake, so an
+    // in-place write here would corrupt Ava's canonical source data for
+    // every future fresh session in this same page load.
+    state.intake.prohibited = { ...state.intake.prohibited, [id]: val };
+    if (val && was !== true) log('fail', `<b>Article 5 flagged — ${esc(c.article)}.</b> ${esc(c.q)} Gate 1 cannot pass until this is cleared or legal confirms an exception in writing.`);
+    if (!val && was === true) log('pass', `<b>${esc(c.article)} cleared.</b> No longer flagged.`);
     render();
   });
 

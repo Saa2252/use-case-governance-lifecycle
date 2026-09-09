@@ -98,40 +98,57 @@ const INTAKE_FIELDS = [
 
 /* --------------------------------------------------------------------------
    Gate 2 — risk questions
-   Ordinal answers, index 0 = lowest exposure.
+   Ordinal answers, index 0 = lowest exposure (Low/Moderate/High/Severe).
+
+   Each question carries a `weight`. Not every dimension pushes the tier
+   equally, and pretending otherwise (a flat unweighted sum) was the actual
+   bug here for a while — "EU exposure" counted exactly as much as
+   "autonomy". The split below is 2 for the four dimensions that set the
+   ceiling on how bad a single failure can be, and 1 for the four that are
+   real but either multiply that ceiling (blast) or whose sharpest danger
+   is combinatorial and already captured by ESCALATIONS below (pii, eu,
+   untrusted) rather than by their solo weight. See `weightWhy` on each.
    -------------------------------------------------------------------------- */
 
 const RISK_QUESTIONS = [
-  { id: 'money', label: 'How much money can it move without a human?',
+  { id: 'money', label: 'How much money can it move without a human?', weight: 2,
     why: 'Financial authority is the fastest route from "chatbot mistake" to "regulatory finding".',
+    weightWhy: 'Counts double — harm scales close to linearly with the dollar ceiling.',
     options: ['None — it cannot touch money', 'Small, capped per action (under $100)',
               'Material per action ($100–$5,000)', 'Uncapped or aggregate uncapped'] },
-  { id: 'autonomy', label: 'How much does it decide on its own?',
+  { id: 'autonomy', label: 'How much does it decide on its own?', weight: 2,
     why: 'Autonomy level is the single strongest predictor of how bad a bad day gets.',
+    weightWhy: 'Counts double — it gates whether harm needs a second failure (a human missing it) or can happen entirely unattended.',
     options: ['Recommends only — a human does the thing', 'Acts, but a human approves before it lands',
               'Acts alone inside hard limits', 'Acts alone, limits are soft or prompt-based'] },
-  { id: 'reversibility', label: 'If it does the wrong thing, how hard is it to undo?',
+  { id: 'reversibility', label: 'If it does the wrong thing, how hard is it to undo?', weight: 2,
     why: 'Reversibility decides whether you need prevention or whether detection is enough.',
+    weightWhy: 'Counts double — it determines which category of control even applies.',
     options: ['Reversible in-session, no trace', 'Reversible with manual back-office work',
               'Reversible only with member contact and goodwill', 'Not reversible'] },
-  { id: 'blast', label: 'How many people does one failure touch?',
+  { id: 'blast', label: 'How many people does one failure touch?', weight: 1,
     why: 'An agent looping is not one error. It is the same error a thousand times before anyone looks.',
+    weightWhy: 'Counts once — it multiplies the harm the dimensions above already establish, rather than setting an independent ceiling.',
     options: ['One member per action', 'One member, but it can run unattended in a loop',
               'Batches of members', 'Every member — systemic'] },
-  { id: 'pii', label: 'Whose data, and how sensitive?',
+  { id: 'pii', label: 'Whose data, and how sensitive?', weight: 1,
     why: 'Drives the DPIA, retention limits and what may be sent to a third-party model provider.',
+    weightWhy: 'Counts once — it drives a distinct compliance surface more than it drives operational harm magnitude.',
     options: ['No personal data', 'Contact details only', 'Account and financial data',
               'Special category data'] },
-  { id: 'eu', label: 'Is there EU exposure?',
+  { id: 'eu', label: 'Is there EU exposure?', weight: 1,
     why: 'Changes the legal instrument, not just the paperwork volume.',
+    weightWhy: 'Counts once — it is a jurisdictional modifier; its sharpest form (credit access) is already a hard Tier 1 floor below, not a matter of degree.',
     options: ['No EU nexus', 'EU staff only', 'EU members as customers',
               'EU members, and the system influences access to credit'] },
-  { id: 'untrusted', label: 'Can untrusted text reach the model?',
+  { id: 'untrusted', label: 'Can untrusted text reach the model?', weight: 1,
     why: 'Prompt injection is not a model bug you can patch out. It is an architecture property of agents that read attacker-controllable text.',
+    weightWhy: 'Counts once alone — its real danger is combinatorial (paired with money or tools access), which the escalation rules below capture directly.',
     options: ['No — fixed internal inputs only', 'Internal staff free text',
               'Authenticated members type freely', 'Anyone on the internet can put text in front of it'] },
-  { id: 'tools', label: 'What is the widest permission it holds?',
+  { id: 'tools', label: 'What is the widest permission it holds?', weight: 2,
     why: 'Governance should follow the permission, not the intention.',
+    weightWhy: 'Counts double — it sets the ceiling of what is possible regardless of how the system behaves most of the time.',
     options: ['Read-only, public data', 'Read-only, member data', 'Write to tickets and records',
               'Write to money or entitlements'] }
 ];
@@ -161,6 +178,17 @@ const TIERS = {
   3: { id: 3, name: 'Tier 3 — Limited', klass: 't3',
        means: 'Light control set. Product owner signs, risk is notified. Annual review. Re-tier if scope grows.' }
 };
+
+/* Where the tier cutoff actually sits. The eight risk answers are weighted
+   (see RISK_QUESTIONS) and averaged into a single severity figure on the
+   same 0-3 (Low-Severe) scale each individual question uses. These two
+   numbers are the policy decision, named as such rather than left as an
+   unexplained fraction of some maximum score: Tier 1 begins once that
+   weighted average reaches High; Tier 3 requires it to stay below
+   Moderate. Escalation rules can still override the result upward
+   regardless of where the average lands. */
+const TIER1_AVG_SEVERITY = 2; // "High" on average, weighted
+const TIER3_AVG_SEVERITY = 1; // below "Moderate" on average, weighted
 
 /* --------------------------------------------------------------------------
    Gate 3 — control library
@@ -315,6 +343,34 @@ const CONTROLS = [
    Loaded at FIRST PASS state, where gate 3 fails.
    -------------------------------------------------------------------------- */
 
+/* --------------------------------------------------------------------------
+   Gate 1 — Article 5 prohibited-practice screening
+   Binary, not tiered: a "yes" here is not a higher risk tier, it is a stop.
+   These eight map to EU AI Act Article 5(1)(a)-(h). Most systems clear all
+   eight in under a minute — the point of the screen is not thoroughness,
+   it is catching the rare system that should not be designed further
+   before a lawyer says so in writing, before any time is spent on tiering
+   a thing that was never going to be approvable regardless of controls.
+   -------------------------------------------------------------------------- */
+const PROHIBITED_CHECKS = [
+  { id: 'subliminal', article: 'Art. 5(1)(a)',
+    q: 'Does it try to influence behaviour in ways a person would not consciously notice, or could not reasonably resist?' },
+  { id: 'vulnerability', article: 'Art. 5(1)(b)',
+    q: 'Does it target people by age, disability, or financial hardship in a way designed to exploit that?' },
+  { id: 'socialscoring', article: 'Art. 5(1)(c)',
+    q: 'Does it score or rank people’s trustworthiness or character from unrelated behaviour, in a way that could unfairly limit what they get access to later?' },
+  { id: 'predictivepolicing', article: 'Art. 5(1)(d)',
+    q: 'Does it predict whether a specific person will commit a crime, based on profiling or personality traits rather than an actual act?' },
+  { id: 'facescraping', article: 'Art. 5(1)(e)',
+    q: 'Does it build or expand a facial-recognition database by scraping images from the internet or CCTV?' },
+  { id: 'emotion', article: 'Art. 5(1)(f)',
+    q: 'Does it infer emotions in a workplace or school setting, for reasons other than genuine medical or safety need?' },
+  { id: 'biocategorise', article: 'Art. 5(1)(g)',
+    q: 'Does it use biometric data to infer someone’s race, political views, union membership, religion, or sexual orientation?' },
+  { id: 'remotebio', article: 'Art. 5(1)(h)',
+    q: 'Does it identify specific named people in real time from live camera feeds in public spaces?' }
+];
+
 const AVA = {
   intake: {
     name: 'Ava',
@@ -325,7 +381,13 @@ const AVA = {
     tools: ['Answer from a knowledge base', 'Read member account records', 'Reverse a fee', 'Open a dispute ticket in the CRM'],
     model: 'Hosted general-purpose LLM, version pinned, EU and US regional endpoints. No fine-tuning on member data.',
     vendor: 'Third-party model provider under a negotiated enterprise agreement. Contractual no-training commitment, named subprocessors, EU data residency option, 24-hour breach notification. Reviewed by Legal 12 Aug 2026.',
-    golive: '2 November 2026'
+    golive: '2 November 2026',
+    // Cleared 5 Aug 2026, same day as the rest of intake. All eight are
+    // genuinely "no" for Ava — a fee-reversal support agent doesn't come
+    // close to any of these — which is the ordinary, unremarkable outcome
+    // this screen is supposed to produce most of the time.
+    prohibited: { subliminal: false, vulnerability: false, socialscoring: false, predictivepolicing: false,
+                  facescraping: false, emotion: false, biocategorise: false, remotebio: false }
   },
   risk: { money: 1, autonomy: 2, reversibility: 1, blast: 1, pii: 2, eu: 2, untrusted: 2, tools: 3 },
 

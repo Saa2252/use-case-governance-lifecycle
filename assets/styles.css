@@ -205,6 +205,10 @@ input[type=text]:focus, textarea:focus, select:focus { outline: 2px solid var(--
 .rq .lab { font-size: 14.5px; font-weight: 550; display: block; margin-bottom: 3px; }
 .rq .why { font-size: 12.5px; color: var(--ink3); margin: 0 0 11px; max-width: 66ch; }
 
+.wtag { font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent);
+  border-radius: 4px; padding: 2px 7px; margin-left: 8px; vertical-align: middle; cursor: help; }
+
 .opts { display: grid; gap: 6px; }
 .opt {
   display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; color: var(--ink2);
@@ -252,6 +256,17 @@ input[type=text]:focus, textarea:focus, select:focus { outline: 2px solid var(--
 .states button[data-s=yes].on { background: var(--ok); border-color: var(--ok); color: #fff; }
 .states button[data-s=no].on { background: var(--bad); border-color: var(--bad); color: #fff; }
 .states button[data-s=na].on { background: var(--ink3); border-color: var(--ink3); color: #fff; }
+/* Prohibited-practice screen: opposite polarity from the controls above —
+   here "No" is the safe answer, so it takes the ok colour, not "Yes". */
+.states button[data-s=clear].on { background: var(--ok); border-color: var(--ok); color: #fff; }
+.states button[data-s=flag].on { background: var(--bad); border-color: var(--bad); color: #fff; }
+
+.prohcheck { padding: 13px 0; border-top: 1px solid var(--line); }
+.prohcheck:first-child { border-top: 0; padding-top: 0; }
+.prohcheck .q { font-size: 13.5px; color: var(--ink); }
+.prohcheck .art { font-family: var(--mono); font-size: 10.5px; color: var(--ink3);
+  margin-left: 8px; white-space: nowrap; }
+.prohcheck .states { margin-top: 9px; }
 
 .ctrl textarea { margin-top: 11px; min-height: 54px; font-size: 13.5px; }
 

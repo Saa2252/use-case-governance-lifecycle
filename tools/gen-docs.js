@@ -13,8 +13,8 @@ const src = fs.readFileSync(path.join(root, 'assets', 'data.js'), 'utf8');
 
 // data.js declares top-level consts and has no imports, so evaluating it in a
 // function scope and handing back the bindings is enough.
-const { GATES, RISK_QUESTIONS, ESCALATIONS, TIERS, CONTROLS } =
-  new Function(`${src}\nreturn { GATES, RISK_QUESTIONS, ESCALATIONS, TIERS, CONTROLS };`)();
+const { GATES, RISK_QUESTIONS, ESCALATIONS, TIERS, CONTROLS, TIER1_AVG_SEVERITY, TIER3_AVG_SEVERITY, PROHIBITED_CHECKS } =
+  new Function(`${src}\nreturn { GATES, RISK_QUESTIONS, ESCALATIONS, TIERS, CONTROLS, TIER1_AVG_SEVERITY, TIER3_AVG_SEVERITY, PROHIBITED_CHECKS };`)();
 
 const L = [];
 const p = (...s) => L.push(...s);
@@ -33,10 +33,29 @@ p('## Risk tiers', '');
 for (const k of Object.keys(TIERS)) {
   p(`**${TIERS[k].name}** — ${TIERS[k].means}`, '');
 }
+p(`The cutoff itself: the eight gate-2 answers are weighted (see below), then averaged into a`,
+  `single severity figure on the same 0-3 scale each question uses. **Tier 1 begins once that`,
+  `weighted average reaches ${TIER1_AVG_SEVERITY.toFixed(1)} (High)**; **Tier 3 requires it to stay`,
+  `under ${TIER3_AVG_SEVERITY.toFixed(1)} (Moderate)**. Escalation rules (below) can still override`,
+  `the result upward regardless of where the average lands — that part of the design is deliberate`,
+  `and unaffected by the weighting.`, '');
 
-p('## The eight questions at gate 2', '');
+p('## Article 5 screen (gate 1)', '',
+  'Answered before the eight risk questions below, and deliberately not folded into them: a "yes"',
+  'here is not a higher tier, it is a stop. These map to EU AI Act Article 5(1)(a)-(h) — practices',
+  'that are not permitted to place on the market in the EU at all, subject to narrow statutory',
+  'exceptions, regardless of what controls sit around them.', '');
+for (const c of PROHIBITED_CHECKS) {
+  p(`- **${c.article}** — ${c.q}`);
+}
+p('');
+
+p('## The eight questions at gate 2', '',
+  'Each answer is scored 0-3 (Low-Severe) and multiplied by the question\'s weight before the',
+  'eight are averaged into a single severity figure. See `docs/control-library.md`\'s "Risk',
+  'tiers" section above for what that average has to reach for each tier.', '');
 for (const q of RISK_QUESTIONS) {
-  p(`### ${q.label}`, '', `*Why it is asked:* ${q.why}`, '');
+  p(`### ${q.label} — weight ${q.weight}`, '', `*Why it is asked:* ${q.why}`, '', `*Why this weight:* ${q.weightWhy}`, '');
   q.options.forEach((o, i) => p(`${i}. ${o}`));
   p('');
 }

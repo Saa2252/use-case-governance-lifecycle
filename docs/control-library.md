@@ -15,74 +15,117 @@ so a lower-risk use case gets a genuinely shorter list rather than the same list
 
 **Tier 3 — Limited** — Light control set. Product owner signs, risk is notified. Annual review. Re-tier if scope grows.
 
+The cutoff itself: the eight gate-2 answers are weighted (see below), then averaged into a
+single severity figure on the same 0-3 scale each question uses. **Tier 1 begins once that
+weighted average reaches 2.0 (High)**; **Tier 3 requires it to stay
+under 1.0 (Moderate)**. Escalation rules (below) can still override
+the result upward regardless of where the average lands — that part of the design is deliberate
+and unaffected by the weighting.
+
+## Article 5 screen (gate 1)
+
+Answered before the eight risk questions below, and deliberately not folded into them: a "yes"
+here is not a higher tier, it is a stop. These map to EU AI Act Article 5(1)(a)-(h) — practices
+that are not permitted to place on the market in the EU at all, subject to narrow statutory
+exceptions, regardless of what controls sit around them.
+
+- **Art. 5(1)(a)** — Does it try to influence behaviour in ways a person would not consciously notice, or could not reasonably resist?
+- **Art. 5(1)(b)** — Does it target people by age, disability, or financial hardship in a way designed to exploit that?
+- **Art. 5(1)(c)** — Does it score or rank people’s trustworthiness or character from unrelated behaviour, in a way that could unfairly limit what they get access to later?
+- **Art. 5(1)(d)** — Does it predict whether a specific person will commit a crime, based on profiling or personality traits rather than an actual act?
+- **Art. 5(1)(e)** — Does it build or expand a facial-recognition database by scraping images from the internet or CCTV?
+- **Art. 5(1)(f)** — Does it infer emotions in a workplace or school setting, for reasons other than genuine medical or safety need?
+- **Art. 5(1)(g)** — Does it use biometric data to infer someone’s race, political views, union membership, religion, or sexual orientation?
+- **Art. 5(1)(h)** — Does it identify specific named people in real time from live camera feeds in public spaces?
+
 ## The eight questions at gate 2
 
-### How much money can it move without a human?
+Each answer is scored 0-3 (Low-Severe) and multiplied by the question's weight before the
+eight are averaged into a single severity figure. See `docs/control-library.md`'s "Risk
+tiers" section above for what that average has to reach for each tier.
+
+### How much money can it move without a human? — weight 2
 
 *Why it is asked:* Financial authority is the fastest route from "chatbot mistake" to "regulatory finding".
+
+*Why this weight:* Counts double — harm scales close to linearly with the dollar ceiling.
 
 0. None — it cannot touch money
 1. Small, capped per action (under $100)
 2. Material per action ($100–$5,000)
 3. Uncapped or aggregate uncapped
 
-### How much does it decide on its own?
+### How much does it decide on its own? — weight 2
 
 *Why it is asked:* Autonomy level is the single strongest predictor of how bad a bad day gets.
+
+*Why this weight:* Counts double — it gates whether harm needs a second failure (a human missing it) or can happen entirely unattended.
 
 0. Recommends only — a human does the thing
 1. Acts, but a human approves before it lands
 2. Acts alone inside hard limits
 3. Acts alone, limits are soft or prompt-based
 
-### If it does the wrong thing, how hard is it to undo?
+### If it does the wrong thing, how hard is it to undo? — weight 2
 
 *Why it is asked:* Reversibility decides whether you need prevention or whether detection is enough.
+
+*Why this weight:* Counts double — it determines which category of control even applies.
 
 0. Reversible in-session, no trace
 1. Reversible with manual back-office work
 2. Reversible only with member contact and goodwill
 3. Not reversible
 
-### How many people does one failure touch?
+### How many people does one failure touch? — weight 1
 
 *Why it is asked:* An agent looping is not one error. It is the same error a thousand times before anyone looks.
+
+*Why this weight:* Counts once — it multiplies the harm the dimensions above already establish, rather than setting an independent ceiling.
 
 0. One member per action
 1. One member, but it can run unattended in a loop
 2. Batches of members
 3. Every member — systemic
 
-### Whose data, and how sensitive?
+### Whose data, and how sensitive? — weight 1
 
 *Why it is asked:* Drives the DPIA, retention limits and what may be sent to a third-party model provider.
+
+*Why this weight:* Counts once — it drives a distinct compliance surface more than it drives operational harm magnitude.
 
 0. No personal data
 1. Contact details only
 2. Account and financial data
 3. Special category data
 
-### Is there EU exposure?
+### Is there EU exposure? — weight 1
 
 *Why it is asked:* Changes the legal instrument, not just the paperwork volume.
+
+*Why this weight:* Counts once — it is a jurisdictional modifier; its sharpest form (credit access) is already a hard Tier 1 floor below, not a matter of degree.
 
 0. No EU nexus
 1. EU staff only
 2. EU members as customers
 3. EU members, and the system influences access to credit
 
-### Can untrusted text reach the model?
+### Can untrusted text reach the model? — weight 1
 
 *Why it is asked:* Prompt injection is not a model bug you can patch out. It is an architecture property of agents that read attacker-controllable text.
+
+*Why this weight:* Counts once alone — its real danger is combinatorial (paired with money or tools access), which the escalation rules below capture directly.
 
 0. No — fixed internal inputs only
 1. Internal staff free text
 2. Authenticated members type freely
 3. Anyone on the internet can put text in front of it
 
-### What is the widest permission it holds?
+### What is the widest permission it holds? — weight 2
 
 *Why it is asked:* Governance should follow the permission, not the intention.
+
+*Why this weight:* Counts double — it sets the ceiling of what is possible regardless of how the system behaves most of the time.
 
 0. Read-only, public data
 1. Read-only, member data

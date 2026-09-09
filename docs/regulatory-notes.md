@@ -18,6 +18,14 @@ These references sit behind a toggle in the app, off by default. That is a delib
 
 ---
 
+## Article 5 comes before Annex III, not after
+
+Prohibited practice and high-risk classification are different questions, and it's worth being precise about the order. Annex III asks *how carefully does this need to be governed*. Article 5 asks *is this permitted to exist in the EU at all* — and that question has to clear before spending any time on the first one, not after.
+
+Gate 1 now screens for this directly, ahead of the eight risk-tiering questions at gate 2: eight yes/no checks mapped to Article 5(1)(a) through (h) — manipulation below conscious awareness, exploiting a vulnerability, social scoring, predictive policing on individuals, facial-recognition database scraping, workplace or school emotion inference, biometric categorisation of protected characteristics, and real-time remote biometric identification in public spaces. A "yes" on any of them is not a tier — the app treats it as a hard stop that blocks approval regardless of what controls gate 3 could produce, because no control set makes a prohibited practice approvable.
+
+Ava clears all eight, and trivially so — a support agent that answers questions and reverses fees under a published policy doesn't come close to any of them. That's worth stating plainly rather than leaving implicit: the ordinary, common outcome of this screen is a fast unanimous "no," and the value of running it isn't in Ava's case, it's in the rare case where it isn't.
+
 ## My assessment of Annex III applicability
 
 **My working position is that Ava likely falls outside Annex III.** I want to set out the reasoning, because the reflex in a lot of governance work is to claim the strictest classification available on the theory that over-compliance is free. It is not free. It burns credibility with the business, and it risks burying the obligations that do apply underneath a pile of ones that may not.

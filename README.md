@@ -159,7 +159,11 @@ More: **[docs/regulatory-notes.md](docs/regulatory-notes.md)**.
 
 **Signatures are locked while any required control is unmet.** An executive should never be asked to sign against an incomplete control set, because the signature is the mechanism that transfers accountability to them.
 
-**Model change control is a first-class gate, not a footnote.** The most common way an approved AI system becomes an unapproved one is that the supplier moved the version and nobody told governance. The app includes a working simulation: trigger a version change and gate 2 re-opens in light mode — four questions, one reviewer, same day. Proportionate, so it actually gets done.
+**Model change control is a first-class gate, not a footnote.** The most common way an approved AI system becomes an unapproved one is that the supplier moved the version — or someone changed what it's allowed to do — and nobody told governance. The app includes a working simulation, not a scripted one: it snapshots the tier and required controls at the moment of the trigger, then genuinely recomputes both when the re-check runs. If nothing in gate 2's answers actually changed, it says so truthfully; if they did, it shows the real diff and escalates rather than quietly passing.
+
+**Prohibited practice is screened before risk is tiered, not folded into it.** Gate 1 checks for EU AI Act Article 5(1)(a)-(h) — manipulation, exploiting a vulnerability, social scoring, predictive policing, and the rest — ahead of the eight risk-tiering questions at gate 2. A "yes" is not a higher tier; it is a hard stop that blocks approval regardless of what controls gate 3 could produce, because no control set makes a prohibited practice approvable. Ava clears all eight, which is the ordinary outcome — the value of the screen is in the rare case that doesn't.
+
+**The risk score is weighted and the cutoffs are named, not arbitrary.** The eight gate-2 questions don't count equally — each carries a stated weight and a one-sentence reason why, the same discipline already applied to the escalation rules. The tier cutoffs are expressed as named severity bands (Tier 1 begins at a weighted-average High, Tier 3 requires staying under Moderate) rather than an unexplained fraction of a maximum score.
 
 **The decision log is append-only and is the real deliverable.** The approval record exports as Markdown with the full decision history, including the failure. A governance record that shows only successes is not evidence of governance.
 
