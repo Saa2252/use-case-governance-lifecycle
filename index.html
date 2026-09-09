@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use Case Governance Lifecycle — six gates from idea to approved AI agent</title>
+<meta name="description" content="A working six-gate governance lifecycle for AI agents, demonstrated on a fictional credit union support agent that fails its control gate on the first pass.">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="mark" aria-hidden="true"></span>
+    <div>
+      <strong>Use Case Governance Lifecycle</strong>
+      <span class="sub">Six gates between an idea and an AI agent your board can defend</span>
+    </div>
+  </div>
+  <div class="topctl">
+    <div class="seg" role="group" aria-label="Record mode">
+      <button id="mode-ava" class="on">Worked example</button>
+      <button id="mode-blank">Register your own</button>
+    </div>
+    <label class="tog"><input type="checkbox" id="regtoggle"><span>Regulatory references</span></label>
+    <button id="resetbtn" class="ghost">Reset</button>
+  </div>
+</header>
+
+<div id="intro" class="intro">
+  <div class="intro-in">
+    <p class="eyebrow">The board question this answers</p>
+    <h1>“Who approved this, and how do we prove it was safe?”</h1>
+    <p class="lede">Northbridge Credit Union — 400 staff, members in the EU and US — is launching <strong>Ava</strong>, a support agent that reads member accounts, answers questions, reverses fees up to $50 and opens dispute tickets. Every one of those verbs is a governance problem.</p>
+    <p class="lede">Walk the six gates below. Ava does not pass on the first attempt, and the gate it fails is the point of the whole thing.</p>
+    <div class="intro-act">
+      <button id="startbtn" class="primary">Open the Ava record</button>
+      <a class="linky" href="#" id="jumpfail">Take me straight to the failure →</a>
+    </div>
+  </div>
+</div>
+
+<main id="app" hidden>
+  <nav class="rail" aria-label="Lifecycle gates">
+    <ol id="railList"></ol>
+    <div class="railfoot">
+      <div class="tierbox" id="tierBox">
+        <span class="tierlabel">Risk tier</span>
+        <span class="tiername" id="tierName">Not yet assessed</span>
+      </div>
+      <button id="recordbtn" class="ghost wide">View approval record</button>
+    </div>
+  </nav>
+
+  <section class="stage" id="stage"></section>
+
+  <aside class="side">
+    <h2 class="sidehead">Decision log</h2>
+    <p class="sidenote">Append-only. This is the artefact that answers the board question.</p>
+    <ol id="logList" class="log"></ol>
+  </aside>
+</main>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-in" role="dialog" aria-modal="true" aria-label="Approval record">
+    <div class="modal-head">
+      <strong>Approval record</strong>
+      <div>
+        <button id="copyrec" class="ghost">Copy as Markdown</button>
+        <button id="closerec" class="ghost">Close</button>
+      </div>
+    </div>
+    <div id="recbody" class="recbody"></div>
+  </div>
+</div>
+
+<footer class="foot">
+  <p><strong>Northbridge Credit Union and Ava are fictional.</strong> No vendor, product or model is named anywhere in this project — by design. The governance framework, gate structure, risk logic and control library are my own work.</p>
+  <p class="foot-links"><a href="https://github.com/">Repository and case study</a> · Frameworks referenced: NIST AI RMF 1.0, Regulation (EU) 2024/1689</p>
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
