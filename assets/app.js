@@ -788,6 +788,16 @@ function renderRecord() {
     <dt>Target go-live</dt><dd>${esc(v.golive || '—')}</dd>
   </dl>
 
+  <h4>Article 5 screen</h4>
+  ${(() => {
+    const pp = v.prohibited || {};
+    const flaggedC = PROHIBITED_CHECKS.filter(c => pp[c.id] === true);
+    if (flaggedC.length) return `<p style="color:var(--bad)"><strong>${flaggedC.length} of ${PROHIBITED_CHECKS.length} flagged</strong> — not approvable under any control set until legal confirms an exception in writing.</p>
+      <ul>${flaggedC.map(c => `<li><strong>${esc(c.article)}</strong> — ${esc(c.q)}</li>`).join('')}</ul>`;
+    const clearedC = PROHIBITED_CHECKS.filter(c => pp[c.id] === false).length;
+    return `<p>Cleared — ${clearedC} of ${PROHIBITED_CHECKS.length} checks, no EU AI Act Article 5 prohibited practice identified.</p>`;
+  })()}
+
   <h4>Risk tier</h4>
   <p><strong>${r ? esc(TIERS[r.tier].name) : 'Not assessed'}</strong>${r ? ` — raw exposure ${r.raw} of ${r.max}.` : ''}</p>
   ${r && r.fired.length ? `<ul>${r.fired.map(e => `<li>${esc(e.say)}</li>`).join('')}</ul>` : ''}
@@ -839,6 +849,19 @@ function recordMarkdown() {
   L.push(`- **Tool permissions:** ${(v.tools || []).join(', ') || '—'}`);
   L.push(`- **Model:** ${v.model || '—'}`);
   L.push(`- **Target go-live:** ${v.golive || '—'}`, '');
+  L.push('## Article 5 screen', '');
+  {
+    const pp = v.prohibited || {};
+    const flaggedC = PROHIBITED_CHECKS.filter(c => pp[c.id] === true);
+    if (flaggedC.length) {
+      L.push(`**${flaggedC.length} of ${PROHIBITED_CHECKS.length} flagged** — not approvable under any control set until legal confirms an exception in writing.`, '');
+      flaggedC.forEach(c => L.push(`- **${c.article}** — ${c.q}`));
+      L.push('');
+    } else {
+      const clearedC = PROHIBITED_CHECKS.filter(c => pp[c.id] === false).length;
+      L.push(`Cleared — ${clearedC} of ${PROHIBITED_CHECKS.length} checks, no EU AI Act Article 5 prohibited practice identified.`, '');
+    }
+  }
   L.push('## Risk tier', '');
   L.push(r ? `**${TIERS[r.tier].name}** — raw exposure ${r.raw} of ${r.max}.` : 'Not assessed.', '');
   (r ? r.fired : []).forEach(e => L.push(`- ${e.say}`));
