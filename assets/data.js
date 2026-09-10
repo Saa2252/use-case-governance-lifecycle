@@ -426,7 +426,7 @@ const AVA = {
   },
 
   evidence: {
-    'human-approval': [{ name: 'Threshold configuration export (service config, not prompt)', date: '2026-10-21', owner: 'Engineering Lead' },
+    'human-approval': [{ name: 'Threshold configuration export (service config, not prompt)', date: '2026-10-20', owner: 'Engineering Lead' },
                        { name: 'Approval queue walkthrough — 12 test reversals, 5 held for review', date: '2026-10-22', owner: 'Member Ops' }],
     'reversal-log':   [{ name: 'Reversal register schema and write-permission matrix', date: '2026-10-27', owner: 'Engineering Lead' },
                        { name: 'Nightly reconciliation report, 5 consecutive days', date: '2026-10-30', owner: 'Finance Ops' }],
