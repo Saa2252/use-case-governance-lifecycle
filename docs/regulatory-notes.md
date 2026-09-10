@@ -67,7 +67,9 @@ If Ava were ever extended to influence lending decisions — pre-qualifying memb
 
 That is a re-tier, not a feature release. It is written into the `model-change` control and into gate 2's escalation rules for exactly that reason: the fourth option on the EU exposure question is *"EU members, and the system influences access to credit"*, and selecting it forces a Tier 1 floor with the stated reason that this is high-risk classification territory **until legal says otherwise in writing**.
 
-The high-risk obligations for Annex III systems became applicable on **2 August 2026**. There is no runway left to discover this after the fact — which is the practical argument for getting the written legal position early rather than treating classification as a formality.
+The high-risk obligations for Annex III systems were originally due to apply from 2 August 2026, but that deadline was deferred to **2 December 2027** by Regulation (EU) 2026/1744 (the "Digital Omnibus on AI"), in force since 27 July 2026 — the Commission's stated reason was that neither industry nor the harmonised-standards bodies were ready, not that the obligations became less serious. That extra runway is real and worth using rather than banking on: the deferral is about infrastructure catching up, not about the underlying risk. If Ava's scope ever moved toward Annex III territory, the move is still to get the written legal position early, while there's time to act on it, not in late 2027 alongside everyone else filing at once.
+
+*(Verified against current sources as of this writing — 10 September 2026 — since the deferral was adopted after this project's design work began. If you're reading this materially later, check whether anything has moved again; EU AI Act implementation dates have already changed once.)*
 
 ---
 
