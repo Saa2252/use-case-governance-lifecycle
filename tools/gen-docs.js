@@ -41,10 +41,11 @@ p(`The cutoff itself: the eight gate-2 answers are weighted (see below), then av
   `and unaffected by the weighting.`, '');
 
 p('## Article 5 screen (gate 1)', '',
-  'Answered before the eight risk questions below, and deliberately not folded into them: a "yes"',
-  'here is not a higher tier, it is a stop. These map to EU AI Act Article 5(1)(a)-(h) — practices',
-  'that are not permitted to place on the market in the EU at all, subject to narrow statutory',
-  'exceptions, regardless of what controls sit around them.', '');
+  `Answered before the eight risk questions below, and deliberately not folded into them: a "yes"`,
+  `here is not a higher tier, it is a stop. These ${PROHIBITED_CHECKS.length} map to EU AI Act Article`,
+  `5(1) — practices that are not permitted to place on the market in the EU at all, subject to narrow`,
+  `statutory exceptions, regardless of what controls sit around them. Two of them ((ba)/(bb)) were`,
+  `added later than the rest — see each entry's own note for its specific application date.`, '');
 for (const c of PROHIBITED_CHECKS) {
   p(`- **${c.article}** — ${c.q}`);
 }

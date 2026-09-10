@@ -281,7 +281,7 @@ function g1() {
       <span class="prohsummary" style="color:${summaryColor}">${esc(summaryLabel)}</span>
     </summary>
     <div class="prohbody">
-      <p class="hint">Eight questions. Most systems clear all eight in under a minute — the point is not thoroughness, it is catching the rare one that was never going to be approvable, before time is spent tiering it. A "yes" is not "add more controls". It is "stop".</p>
+      <p class="hint">${PROHIBITED_CHECKS.length} questions. Most systems clear all ${PROHIBITED_CHECKS.length} in under a minute — the point is not thoroughness, it is catching the rare one that was never going to be approvable, before time is spent tiering it. A "yes" is not "add more controls". It is "stop".</p>
       ${PROHIBITED_CHECKS.map(c => {
         const ans = p[c.id];
         return `<div class="prohcheck">

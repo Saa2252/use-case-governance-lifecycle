@@ -346,17 +346,28 @@ const CONTROLS = [
 /* --------------------------------------------------------------------------
    Gate 1 — Article 5 prohibited-practice screening
    Binary, not tiered: a "yes" here is not a higher risk tier, it is a stop.
-   These eight map to EU AI Act Article 5(1)(a)-(h). Most systems clear all
-   eight in under a minute — the point of the screen is not thoroughness,
-   it is catching the rare system that should not be designed further
-   before a lawyer says so in writing, before any time is spent on tiering
-   a thing that was never going to be approvable regardless of controls.
-   -------------------------------------------------------------------------- */
+   Ten checks map to EU AI Act Article 5(1)(a) through (bb). Most systems
+   clear all ten in under a minute — the point of the screen is not
+   thoroughness, it is catching the rare system that should not be designed
+   further before a lawyer says so in writing, before any time is spent on
+   tiering a thing that was never going to be approvable regardless of
+   controls.
+
+   Two of the ten — (ba) and (bb) — were added later than the other eight:
+   Regulation (EU) 2026/1744 (the "Digital Omnibus on AI", in force since
+   27 July 2026) inserted them, applying from 2 December 2026. Included here
+   ahead of that date deliberately — a screening process that only checks
+   for what is already binding, rather than what is confirmed and imminent,
+   is exactly the kind of gap that gets found the hard way. -------------- */
 const PROHIBITED_CHECKS = [
   { id: 'subliminal', article: 'Art. 5(1)(a)',
     q: 'Does it try to influence behaviour in ways a person would not consciously notice, or could not reasonably resist?' },
   { id: 'vulnerability', article: 'Art. 5(1)(b)',
     q: 'Does it target people by age, disability, or financial hardship in a way designed to exploit that?' },
+  { id: 'intimateimagery', article: 'Art. 5(1)(ba) — applies from 2 Dec 2026',
+    q: 'Does it generate or alter realistic images, video, or audio of a real, identifiable person’s intimate body parts without their consent?' },
+  { id: 'csam', article: 'Art. 5(1)(bb) — applies from 2 Dec 2026',
+    q: 'Does it generate or alter child sexual abuse material, in any form?' },
   { id: 'socialscoring', article: 'Art. 5(1)(c)',
     q: 'Does it score or rank people’s trustworthiness or character from unrelated behaviour, in a way that could unfairly limit what they get access to later?' },
   { id: 'predictivepolicing', article: 'Art. 5(1)(d)',
@@ -382,11 +393,15 @@ const AVA = {
     model: 'Hosted general-purpose LLM, version pinned, EU and US regional endpoints. No fine-tuning on member data.',
     vendor: 'Third-party model provider under a negotiated enterprise agreement. Contractual no-training commitment, named subprocessors, EU data residency option, 24-hour breach notification. Reviewed by Legal 12 Aug 2026.',
     golive: '2 November 2026',
-    // Cleared 5 Aug 2026, same day as the rest of intake. All eight are
+    // Cleared 5 Aug 2026, same day as the rest of intake. All ten are
     // genuinely "no" for Ava — a fee-reversal support agent doesn't come
     // close to any of these — which is the ordinary, unremarkable outcome
-    // this screen is supposed to produce most of the time.
-    prohibited: { subliminal: false, vulnerability: false, socialscoring: false, predictivepolicing: false,
+    // this screen is supposed to produce most of the time. (ba)/(bb) read
+    // "no" regardless of their December 2026 effective date — Ava never
+    // generates images, video, or audio of any kind, so the underlying
+    // fact doesn't depend on when the prohibition becomes binding.
+    prohibited: { subliminal: false, vulnerability: false, intimateimagery: false, csam: false,
+                  socialscoring: false, predictivepolicing: false,
                   facescraping: false, emotion: false, biocategorise: false, remotebio: false }
   },
   risk: { money: 1, autonomy: 2, reversibility: 1, blast: 1, pii: 2, eu: 2, untrusted: 2, tools: 3 },

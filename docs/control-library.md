@@ -25,12 +25,15 @@ and unaffected by the weighting.
 ## Article 5 screen (gate 1)
 
 Answered before the eight risk questions below, and deliberately not folded into them: a "yes"
-here is not a higher tier, it is a stop. These map to EU AI Act Article 5(1)(a)-(h) — practices
-that are not permitted to place on the market in the EU at all, subject to narrow statutory
-exceptions, regardless of what controls sit around them.
+here is not a higher tier, it is a stop. These 10 map to EU AI Act Article
+5(1) — practices that are not permitted to place on the market in the EU at all, subject to narrow
+statutory exceptions, regardless of what controls sit around them. Two of them ((ba)/(bb)) were
+added later than the rest — see each entry's own note for its specific application date.
 
 - **Art. 5(1)(a)** — Does it try to influence behaviour in ways a person would not consciously notice, or could not reasonably resist?
 - **Art. 5(1)(b)** — Does it target people by age, disability, or financial hardship in a way designed to exploit that?
+- **Art. 5(1)(ba) — applies from 2 Dec 2026** — Does it generate or alter realistic images, video, or audio of a real, identifiable person’s intimate body parts without their consent?
+- **Art. 5(1)(bb) — applies from 2 Dec 2026** — Does it generate or alter child sexual abuse material, in any form?
 - **Art. 5(1)(c)** — Does it score or rank people’s trustworthiness or character from unrelated behaviour, in a way that could unfairly limit what they get access to later?
 - **Art. 5(1)(d)** — Does it predict whether a specific person will commit a crime, based on profiling or personality traits rather than an actual act?
 - **Art. 5(1)(e)** — Does it build or expand a facial-recognition database by scraping images from the internet or CCTV?
