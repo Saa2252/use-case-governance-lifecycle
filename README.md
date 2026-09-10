@@ -208,14 +208,6 @@ Then open `http://localhost:4173`.
 | `?regs=1` | Regulatory references toggled on |
 | `#gate-4` | Any gate directly |
 
-### Regenerating the images
-
-`tools/make-assets.sh` drives headless Chrome over the running app to rebuild the diagram and the nine summary cards into `media/`. The screenshots are captured from the app itself, so they cannot drift from what it actually does.
-
-```bash
-./tools/make-assets.sh
-```
-
 ---
 
 ## Repository
@@ -228,8 +220,7 @@ assets/styles.css              light and dark
 assets/lifecycle-diagram.svg   the six-gate diagram
 docs/control-library.md        all fourteen controls with framework mapping
 docs/regulatory-notes.md       the EU AI Act classification reasoning
-media/                         diagram PNG, summary cards
-tools/                         asset generation
+media/                         diagram PNG
 ```
 
 ---
