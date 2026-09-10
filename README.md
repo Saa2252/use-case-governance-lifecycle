@@ -165,13 +165,27 @@ More: **[docs/regulatory-notes.md](docs/regulatory-notes.md)**.
 
 **The risk score is weighted and the cutoffs are named, not arbitrary.** The eight gate-2 questions don't count equally — each carries a stated weight and a one-sentence reason why, the same discipline already applied to the escalation rules. The tier cutoffs are expressed as named severity bands (Tier 1 begins at a weighted-average High, Tier 3 requires staying under Moderate) rather than an unexplained fraction of a maximum score.
 
-**The decision log is append-only and is the real deliverable.** The approval record exports as Markdown with the full decision history, including the failure. A governance record that shows only successes is not evidence of governance.
+**The decision log is treated as append-only and is the real deliverable.** The approval record exports as Markdown with the full decision history, including the failure. A governance record that shows only successes is not evidence of governance. "Append-only" here describes the intended workflow, not a technical guarantee — see Known limitations below for what that distinction actually means.
 
 **Time costs are stated on every gate.** A process that does not budget for calendars gets skipped, and a skipped process is worse than no process because it creates the appearance of control.
 
 ### Deliberately out of scope
 
 No dashboards, no multi-user workflow, no comment threads, no approval routing engine. Those are product features, and adding them would have obscured the thing being demonstrated, which is the decision structure. Six gates and an approval record.
+
+### Known limitations
+
+This app runs entirely inside your browser — no server, no login system, no file storage. That single fact is the root cause of everything below; each gap traces back to there being no independent, outside system keeping watch, only the same browser the visitor controls.
+
+**The decision log isn't actually tamper-proof.** It's called "append-only" throughout this project, and the interface treats it that way, but that describes the intended workflow, not a technical guarantee. It's a list stored in the visitor's own browser — anyone comfortable with developer tools could rewrite it, and nothing here would show that it happened. A real tamper-evident log needs a server (or something like a hash chain) recording events independently of the person the log is about. Verifying someone's own claims using only their own notebook doesn't work, no matter how neatly the notebook is organised.
+
+**Signing is a name typed into a box, not a verified identity.** Nothing checks that "M. Okonjo" was actually typed by M. Okonjo. Real identity verification — a login, a company email confirmation, a proper e-signature service — needs user accounts and a server to check credentials against: a different, much bigger piece of software than a single page that runs offline.
+
+**Evidence is a description, not the document itself.** Gate 4 records "Adversarial test report — 47 attempts, 3 findings" with a date and an owner, but no PDF, screenshot, or file is actually attached or checked. That's the difference between a filing cabinet holding the real signed reports and an index card that says a report exists somewhere. The index card is what a page with no file storage can offer; the filing cabinet needs a server.
+
+**Nothing checks that different signers are actually different people.** Catching "the same person signed twice under two names" requires knowing who is really behind the keyboard, which loops back to the identity problem above. Without that, the software can only compare the text people typed, not the people themselves.
+
+None of these get a fake fix. A padlock icon that doesn't lock anything, or a "verified" checkmark that verifies nothing, would look more secure than this actually is — which is worse than the honest gap. Closing any of them for real means adding the one thing this project deliberately doesn't have: a server.
 
 ---
 
