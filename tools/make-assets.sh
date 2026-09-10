@@ -4,7 +4,7 @@
 #
 #   ./tools/make-assets.sh
 #
-# Needs Google Chrome and python3 (Pillow, for the animated GIF).
+# Needs Google Chrome.
 
 set -euo pipefail
 
@@ -15,7 +15,7 @@ PORT=4173
 BASE="http://localhost:$PORT"
 
 [ -x "$CHROME" ] || { echo "Google Chrome not found at $CHROME"; exit 1; }
-mkdir -p "$OUT" "$OUT/frames"
+mkdir -p "$OUT"
 
 # Serve the repo; JS deep links do not work over file://
 python3 -m http.server "$PORT" --directory "$ROOT" >/dev/null 2>&1 &
@@ -37,22 +37,5 @@ echo "→ summary cards"
 for i in 0 1 2 3 4 5 6 7 8; do
   shot "$BASE/media/cards.html#card-$i" "$OUT/card-$(printf %02d "$i").png" 1080 1080
 done
-
-echo "→ click-through frames"
-n=0
-for step in \
-  "record=firstpass#gate-1" \
-  "record=firstpass#gate-2" \
-  "record=firstpass#gate-3" \
-  "record=approved#gate-3" \
-  "record=approved#gate-4" \
-  "record=approved#gate-5" \
-  "record=approved#gate-6" ; do
-  shot "$BASE/index.html?$step" "$OUT/frames/frame-$(printf %02d "$n").png" 1400 900
-  n=$((n+1))
-done
-
-echo "→ animated GIF"
-python3 "$ROOT/tools/make-gif.py" "$OUT/frames" "$OUT/walkthrough.gif"
 
 echo "Done. Assets in $OUT"
